@@ -46,6 +46,7 @@ public class EquipmentImporter
     private Weapon MapToWeapon(EquipmentDto dto)
     {
         var price = dto.Cost is null ? "" : $"{dto.Cost.Quantity} {dto.Cost.Unit}";
+
         var props = dto.Properties is null || dto.Properties.Count == 0
             ? ""
             : string.Join(", ", dto.Properties.Select(p => p.Name));

@@ -1,4 +1,22 @@
+using Microsoft.EntityFrameworkCore;
+using RpgBuilderMvc.DndApi;
+using RpgBuilderMvc.Infrastructure.Persistence;
+using RpgBuilderMvc.Infrastructure.Sync;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// DbContext
+builder.Services.AddDbContext<RpgDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// HttpClient D&D API
+builder.Services.AddHttpClient<Dnd5eClient>();
+
+// EquipmentImporter
+builder.Services.AddScoped<EquipmentImporter>();
+
+// MVC 
+builder.Services.AddControllersWithViews();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

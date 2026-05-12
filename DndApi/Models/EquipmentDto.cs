@@ -4,7 +4,7 @@ public class EquipmentDto
 {
     public string Index { get; set; } = null!;
     public string Name { get; set; } = null!;
-    public string Equipment_Category { get; set; } = null!;
+    public ApiReferenceDto Equipment_Category { get; set; } = null!;
 
     public string? Weapon_Category { get; set; }
     public string? Armor_Category { get; set; }
@@ -15,6 +15,13 @@ public class EquipmentDto
     public DamageDto? Damage { get; set; }
 
     public List<EquipmentPropertyDto> Properties { get; set; } = [];
+}
+
+public class ApiReferenceDto
+{
+    public string Index { get; set; } = null!;
+    public string Name { get; set; } = null!;
+    public string Url { get; set; } = null!;
 }
 
 public class CostDto
