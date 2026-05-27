@@ -4,15 +4,8 @@ using RpgBuilderMvc.Infrastructure.Persistence;
 
 namespace RpgBuilderMvc.Controllers;
 
-public class WeaponsController : Controller
+public class WeaponsController(RpgDbContext _db) : Controller
 {
-    private readonly RpgDbContext _db;
-
-    public WeaponsController(RpgDbContext db)
-    {
-        _db = db;
-    }
-
     public async Task<IActionResult> Index()
     {
         var weapons = await _db.Weapons

@@ -11,7 +11,7 @@ namespace RpgBuilderMvc.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult Edit()
         {
             return View();
         }

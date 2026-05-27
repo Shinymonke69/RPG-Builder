@@ -3,19 +3,12 @@ using RpgBuilderMvc.Infrastructure.Sync;
 
 namespace RpgBuilderMvc.Controllers;
 
-public class EquipmentSyncController : Controller
+public class EquipmentSyncController(EquipmentImporter importer) : Controller
 {
-    private readonly EquipmentImporter _importer;
-
-    public EquipmentSyncController(EquipmentImporter importer)
-    {
-        _importer = importer;
-    }
-
     // GET: /EquipmentSync/Run
     public async Task<IActionResult> Run()
     {
-        await _importer.ImportAsync();
+        await importer.ImportAsync();
         return Content("Equipment import finished.");
     }
 }

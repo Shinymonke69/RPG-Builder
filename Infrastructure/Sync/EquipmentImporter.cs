@@ -6,44 +6,67 @@ using RpgBuilderMvc.Infrastructure.Persistence;
 
 namespace RpgBuilderMvc.Infrastructure.Sync;
 
-public class EquipmentImporter
+public class EquipmentImporter(Dnd5eClient client, RpgDbContext db)
 {
-    private readonly Dnd5eClient _client;
-    private readonly RpgDbContext _db;
-
-    public EquipmentImporter(Dnd5eClient client, RpgDbContext db)
-    {
-        _client = client;
-        _db = db;
-    }
-
     public async Task ImportAsync()
     {
-        var list = await _client.GetEquipmentListAsync();
+        var list = await client.GetEquipmentListAsync();
 
         foreach (var item in list.Results)
         {
-            var dto = await _client.GetEquipmentAsync(item.Index);
+            var dto = await client.GetEquipmentAsync(item.Index);
             if (dto is null) continue;
 
             if (dto.Weapon_Category is not null)
             {
                 var weapon = MapToWeapon(dto);
-                if (!await _db.Weapons.AnyAsync(w => w.Index == weapon.Index))
-                    _db.Weapons.Add(weapon);
+
+                var existing = await db.Weapons
+                    .FirstOrDefaultAsync(w => w.Index == weapon.Index);
+
+                if (existing is null)
+                {
+                    db.Weapons.Add(weapon);
+                }
+                else
+                {
+                    existing.Name = weapon.Name;
+                    existing.Price = weapon.Price;
+                    existing.Damage = weapon.Damage;
+                    existing.Weight = weapon.Weight;
+                    existing.Properties = weapon.Properties;
+
+                }
             }
             else if (dto.Armor_Category is not null)
             {
                 var armor = MapToArmor(dto);
-                if (!await _db.Armors.AnyAsync(a => a.Index == armor.Index))
-                    _db.Armors.Add(armor);
+
+                
+                var existing = await db.Armors
+                    .FirstOrDefaultAsync(a => a.Index == armor.Index);
+
+                if (existing is null)
+                {
+                    db.Armors.Add(armor);
+                }
+                else
+                {
+                    existing.Name = armor.Name;
+                    existing.Price = armor.Price;
+                    existing.Ac = armor.Ac;
+                    existing.Strength = armor.Strength;
+                    existing.Stealth = armor.Stealth;
+                    existing.Weight = armor.Weight;
+
+                }
             }
         }
 
-        await _db.SaveChangesAsync();
+        await db.SaveChangesAsync();
     }
 
-    private Weapon MapToWeapon(EquipmentDto dto)
+    private static Weapon MapToWeapon(EquipmentDto dto)
     {
         var price = dto.Cost is null ? "" : $"{dto.Cost.Quantity} {dto.Cost.Unit}";
 
@@ -62,7 +85,7 @@ public class EquipmentImporter
         };
     }
 
-    private Armor MapToArmor(EquipmentDto dto)
+    private static Armor MapToArmor(EquipmentDto dto)
     {
         var price = dto.Cost is null ? "" : $"{dto.Cost.Quantity} {dto.Cost.Unit}";
 
@@ -71,7 +94,6 @@ public class EquipmentImporter
             Index = dto.Index,
             Name = dto.Name,
             Price = price,
-            // Por enquanto deixamos esses campos vazios; depois mapeamos certinho
             Ac = "",
             Strength = "",
             Stealth = "",
