@@ -7,16 +7,8 @@ using RpgBuilderMvc.Infrastructure.Persistence;
 
 namespace RpgBuilderMvc.Infrastructure.Sync;
 
-public class SrdImporter
+public class SrdImporter(Dnd5eClient client, RpgDbContext db)
 {
-    private readonly Dnd5eClient _client;
-    private readonly RpgDbContext _db;
-
-    public SrdImporter(Dnd5eClient client, RpgDbContext db)
-    {
-        _client = client;
-        _db = db;
-    }
 
     public async Task ImportAllAsync()
     {
@@ -26,26 +18,26 @@ public class SrdImporter
         await ImportTraitsAsync();
         await ImportSpellsAsync();
 
-        await _db.SaveChangesAsync();
+        await db.SaveChangesAsync();
     }
 
     private async Task ImportClassesAsync()
     {
-        var list = await _client.GetClassesAsync();
+        var list = await client.GetClassesAsync();
 
         foreach (var item in list.Results)
         {
-            var dto = await _client.GetClassAsync(item.Index);
+            var dto = await client.GetClassAsync(item.Index);
             if (dto is null) continue;
 
-            var entity = MapToCharacterClass(dto);
+            var entity = MapToClass(dto);
 
-            var existing = await _db.Classes
+            var existing = await db.Classes
                 .FirstOrDefaultAsync(c => c.Index == entity.Index);
 
             if (existing is null)
             {
-                _db.Classes.Add(entity);
+                db.Classes.Add(entity);
             }
             else
             {
@@ -58,7 +50,7 @@ public class SrdImporter
         }
     }
 
-    private static CharacterClass MapToCharacterClass(ClassDto dto)
+    private static Class MapToClass(ClassDto dto)
     {
         var profs = dto.Proficiencies is null || dto.Proficiencies.Count == 0
             ? ""
@@ -72,7 +64,7 @@ public class SrdImporter
             ? ""
             : string.Join(", ", dto.Subclasses.Select(p => p.Name));
 
-        return new CharacterClass
+        return new Class
         {
             Index = dto.Index,
             Name = dto.Name,
@@ -86,21 +78,21 @@ public class SrdImporter
 
     private async Task ImportRacesAsync()
     {
-        var list = await _client.GetRacesAsync();
+        var list = await client.GetRacesAsync();
 
         foreach (var item in list.Results)
         {
-            var dto = await _client.GetRaceAsync(item.Index);
+            var dto = await client.GetRaceAsync(item.Index);
             if (dto is null) continue;
 
             var entity = MapToRace(dto);
 
-            var existing = await _db.Races
+            var existing = await db.Races
                 .FirstOrDefaultAsync(r => r.Index == entity.Index);
 
             if (existing is null)
             {
-                _db.Races.Add(entity);
+                db.Races.Add(entity);
             }
             else
             {
@@ -139,21 +131,21 @@ public class SrdImporter
     }
     private async Task ImportBackgroundsAsync()
     {
-        var list = await _client.GetBackgroundsAsync();
+        var list = await client.GetBackgroundsAsync();
 
         foreach (var item in list.Results)
         {
-            var dto = await _client.GetBackgroundAsync(item.Index);
+            var dto = await client.GetBackgroundAsync(item.Index);
             if (dto is null) continue;
 
             var entity = MapToBackground(dto);
 
-            var existing = await _db.Backgrounds
+            var existing = await db.Backgrounds
                 .FirstOrDefaultAsync(b => b.Index == entity.Index);
 
             if (existing is null)
             {
-                _db.Backgrounds.Add(entity);
+                db.Backgrounds.Add(entity);
             }
             else
             {
@@ -200,21 +192,21 @@ public class SrdImporter
 
     private async Task ImportTraitsAsync()
     {
-        var list = await _client.GetTraitsAsync();
+        var list = await client.GetTraitsAsync();
 
         foreach (var item in list.Results)
         {
-            var dto = await _client.GetTraitAsync(item.Index);
+            var dto = await client.GetTraitAsync(item.Index);
             if (dto is null) continue;
 
             var entity = MapToTrait(dto);
 
-            var existing = await _db.Traits
+            var existing = await db.Traits
                 .FirstOrDefaultAsync(t => t.Index == entity.Index);
 
             if (existing is null)
             {
-                _db.Traits.Add(entity);
+                db.Traits.Add(entity);
             }
             else
             {
@@ -241,21 +233,21 @@ public class SrdImporter
 
     private async Task ImportSpellsAsync()
     {
-        var list = await _client.GetSpellsAsync();
+        var list = await client.GetSpellsAsync();
 
         foreach (var item in list.Results)
         {
-            var dto = await _client.GetSpellAsync(item.Index);
+            var dto = await client.GetSpellAsync(item.Index);
             if (dto is null) continue;
 
             var entity = MapToSpell(dto);
 
-            var existing = await _db.Spells
+            var existing = await db.Spells
                 .FirstOrDefaultAsync(s => s.Index == entity.Index);
 
             if (existing is null)
             {
-                _db.Spells.Add(entity);
+                db.Spells.Add(entity);
             }
             else
             {

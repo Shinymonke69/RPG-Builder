@@ -1,19 +1,153 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RpgBuilderMvc.Domain.Entities;
+using RpgBuilderMvc.Infrastructure.Persistence;
 
-namespace RpgBuilderMvc.Controllers
+namespace RpgBuilderMvc.Controllers;
+
+public class CharactersController(RpgDbContext db) : Controller
 {
-    public class CharactersController : Controller
+
+    // GET: /Characters
+    public IActionResult Index()
     {
-        [HttpGet]
-        public IActionResult Create()
+        return RedirectToAction("Index", "Home");
+    }
+
+    // GET: /Characters/Create
+    public async Task<IActionResult> Create()
+    {
+        var classes = await db.Classes.OrderBy(c => c.Name).ToListAsync();
+        var races = await db.Races.OrderBy(r => r.Name).ToListAsync();
+        var backgrounds = await db.Backgrounds.OrderBy(b => b.Name).ToListAsync();
+
+        ViewBag.Classes = classes;
+        ViewBag.Races = races;
+        ViewBag.Backgrounds = backgrounds;
+
+        return View();
+    }
+
+    // POST: /Characters/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(
+        string name,
+        int level,
+        string classIndex,
+        string raceIndex,
+        string backgroundIndex)
+    {
+        // Carregar os nomes das tabelas SRD
+        var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
+        var race = await db.Races.FirstOrDefaultAsync(r => r.Index == raceIndex);
+        var bg = await db.Backgrounds.FirstOrDefaultAsync(b => b.Index == backgroundIndex);
+
+        if (cls is null || race is null || bg is null)
         {
+            var classes = await db.Classes.OrderBy(c => c.Name).ToListAsync();
+            var races = await db.Races.OrderBy(r => r.Name).ToListAsync();
+            var backgrounds = await db.Backgrounds.OrderBy(b => b.Name).ToListAsync();
+
+            ViewBag.Classes = classes;
+            ViewBag.Races = races;
+            ViewBag.Backgrounds = backgrounds;
+
+            ModelState.AddModelError("", "Classe, raça ou antecedente inválido.");
             return View();
         }
 
-        [HttpGet]
-        public IActionResult Edit()
+        var character = new Character
         {
-            return View();
+            Name = name,
+            Level = level,
+            Status = "Ativo",
+            ClassIndex = cls.Index,
+            ClassName = cls.Name,
+            RaceIndex = race.Index,
+            RaceName = race.Name,
+            BackgroundIndex = bg.Index,
+            BackgroundName = bg.Name
+        };
+
+        db.Characters.Add(character);
+        await db.SaveChangesAsync();
+
+        return RedirectToAction("Index", "Home");
+    }
+
+    // GET: /Characters/Edit/5
+    public async Task<IActionResult> Edit(int id)
+    {
+        var character = await db.Characters.FindAsync(id);
+        if (character == null) return NotFound();
+
+        // Carregar listas se você quiser permitir mudar classe/raça/background
+        var classes = await db.Classes.OrderBy(c => c.Name).ToListAsync();
+        var races = await db.Races.OrderBy(r => r.Name).ToListAsync();
+        var backgrounds = await db.Backgrounds.OrderBy(b => b.Name).ToListAsync();
+
+        ViewBag.Classes = classes;
+        ViewBag.Races = races;
+        ViewBag.Backgrounds = backgrounds;
+
+        return View(character);
+    }
+
+    // POST: /Characters/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, string name, int level, string status,
+        string classIndex, string raceIndex, string backgroundIndex)
+    {
+        var character = await db.Characters.FindAsync(id);
+        if (character == null) return NotFound();
+
+        var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
+        var race = await db.Races.FirstOrDefaultAsync(r => r.Index == raceIndex);
+        var bg = await db.Backgrounds.FirstOrDefaultAsync(b => b.Index == backgroundIndex);
+        if (cls == null || race == null || bg == null)
+        {
+            ModelState.AddModelError("", "Classe, raça ou antecedente inválido.");
+
+            var classes = await db.Classes.OrderBy(c => c.Name).ToListAsync();
+            var races = await db.Races.OrderBy(r => r.Name).ToListAsync();
+            var backgrounds = await db.Backgrounds.OrderBy(b => b.Name).ToListAsync();
+
+            ViewBag.Classes = classes;
+            ViewBag.Races = races;
+            ViewBag.Backgrounds = backgrounds;
+
+            return View(character);
         }
+
+        character.Name = name;
+        character.Level = level;
+        character.Status = status;
+        character.ClassIndex = cls.Index;
+        character.ClassName = cls.Name;
+        character.RaceIndex = race.Index;
+        character.RaceName = race.Name;
+        character.BackgroundIndex = bg.Index;
+        character.BackgroundName = bg.Name;
+
+        await db.SaveChangesAsync();
+
+        return RedirectToAction("Index", "Home");
+    }
+
+    // POST: /Characters/Delete/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var character = await db.Characters.FindAsync(id);
+        if (character == null) return NotFound();
+
+        db.Characters.Remove(character);
+        await db.SaveChangesAsync();
+
+        // Volta para a Home ou para Characters/Index, você escolhe:
+        return RedirectToAction("Index", "Home");
     }
 }

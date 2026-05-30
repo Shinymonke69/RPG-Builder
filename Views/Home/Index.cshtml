@@ -1,9 +1,12 @@
-﻿@{
+﻿@model IEnumerable<RpgBuilderMvc.Domain.Entities.Character>
+
+@{
     ViewData["Title"] = "Painel";
+    var currentPage = ViewBag.CurrentPage as int? ?? 1;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
 }
 
 <div class="layout-container flex h-full grow flex-col">
-
     <div class="flex flex-1 flex-col">
         <main class="flex-1 p-6 md:p-10 w-full">
             <div class="max-w-6xl mx-auto">
@@ -17,7 +20,9 @@
                             Gerencie seus personagens.
                         </p>
                     </div>
-                    <a asp-controller="Characters" asp-action="Create" class="flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-primary text-white text-sm font-bold tracking-wide hover:brightness-110 transition-all shadow-lg shadow-primary/20">
+                    <a asp-controller="Characters"
+                       asp-action="Create"
+                       class="flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-primary text-white text-sm font-bold tracking-wide hover:brightness-110 transition-all shadow-lg shadow-primary/20">
                         <span class="material-symbols-outlined">add</span>
                         <span>Criar novo personagem</span>
                     </a>
@@ -40,116 +45,90 @@
 
                 <div class="mt-8 rounded-2xl bg-blue-550/80 dark:bg-blue-550/70 border border-blue-550/70 shadow-xl p-6 md:p-8">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                        <div class="group flex flex-col p-6 rounded-xl border border-primary/10 bg-slate-50 dark:bg-primary/5 hover:border-primary/40 transition-all">
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                    <span class="material-symbols-outlined text-3xl">auto_fix_high</span>
+                        @foreach (var ch in Model)
+                        {
+                            <div class="group flex flex-col p-6 rounded-xl border border-primary/10 bg-slate-50 dark:bg-primary/5 hover:border-primary/40 transition-all">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                        <span class="material-symbols-outlined text-3xl">auto_fix_high</span>
+                                    </div>
+                                    <span class="px-3 py-1 rounded-full
+                                                 @(ch.Status == "Ativo" ? "bg-green-500/10 text-green-500" :
+                                                   ch.Status == "Favorito" ? "bg-yellow-500/10 text-yellow-600" :
+                                                   "bg-slate-500/20 text-slate-500")
+                                                 text-xs font-bold uppercase tracking-wider">
+                                        @ch.Status
+                                    </span>
                                 </div>
-                                <span class="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold uppercase tracking-wider">
-                                    Ativo
-                                </span>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 font-display mb-1">
-                                Thaelin Silverleaf
-                            </h3>
-                            <div class="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-sm mb-6">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">person</span>
-                                    <span>Elfo • Mago</span>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 font-display mb-1">
+                                    @ch.Name
+                                </h3>
+                                <div class="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-sm mb-6">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm">person</span>
+                                        <span>@ch.RaceName • @ch.ClassName</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm">military_tech</span>
+                                        <span class="font-bold text-primary">Nível @ch.Level</span>
+                                    </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">military_tech</span>
-                                    <span class="font-bold text-primary">Nível 8</span>
-                                </div>
-                            </div>
-                            <button class="mt-auto w-full py-2.5 rounded-lg bg-primary/10 text-primary text-sm font-bold hover:bg-primary hover:text-white transition-all">
-                                Ver ficha do personagem
-                            </button>
-                        </div>
-
-                        <div class="group flex flex-col p-6 rounded-xl border border-primary/10 bg-slate-50 dark:bg-primary/5 hover:border-primary/40 transition-all">
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                    <span class="material-symbols-outlined text-3xl">shield</span>
-                                </div>
-                                <span class="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold uppercase tracking-wider">
-                                    Ativo
-                                </span>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 font-display mb-1">
-                                Grog Strongjaw
-                            </h3>
-                            <div class="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-sm mb-6">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">person</span>
-                                    <span>Orc • Bárbaro</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">military_tech</span>
-                                    <span class="font-bold text-primary">Nível 12</span>
+                                <div class="mt-auto flex gap-2">
+                                    <a asp-controller="Characters"
+                                       asp-action="Edit"
+                                       asp-route-id="@ch.Id"
+                                       class="flex-1 py-2.5 rounded-lg bg-primary/10 text-primary text-sm font-bold hover:bg-primary hover:text-white transition-all text-center">
+                                        Ver ficha do personagem
+                                    </a>
+                                    <form asp-controller="Characters"
+                                          asp-action="Delete"
+                                          asp-route-id="@ch.Id"
+                                          method="post"
+                                          class="inline">
+                                        <button type="submit"
+                                                onclick="return confirm('Tem certeza que deseja excluir @ch.Name?');"
+                                                class="px-3 py-2 rounded-lg bg-red-500/10 text-red-600 text-xs font-bold hover:bg-red-500 hover:text-white transition-all">
+                                            Excluir
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-                            <button class="mt-auto w-full py-2.5 rounded-lg bg-primary/10 text-primary text-sm font-bold hover:bg-primary hover:text-white transition-all">
-                                Ver ficha do personagem
-                            </button>
-                        </div>
-
-                        <div class="group flex flex-col p-6 rounded-xl border border-primary/10 bg-slate-50 dark:bg-primary/5 hover:border-primary/40 transition-all">
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                    <span class="material-symbols-outlined text-3xl">music_note</span>
-                                </div>
-                                <span class="px-3 py-1 rounded-full bg-slate-500/20 text-slate-500 text-xs font-bold uppercase tracking-wider">
-                                    Inativo
-                                </span>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 font-display mb-1">
-                                Lirael Vane
-                            </h3>
-                            <div class="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-sm mb-6">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">person</span>
-                                    <span>Tiefling • Bardo</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">military_tech</span>
-                                    <span class="font-bold text-primary">Nível 5</span>
-                                </div>
-                            </div>
-                            <button class="mt-auto w-full py-2.5 rounded-lg bg-primary/10 text-primary text-sm font-bold hover:bg-primary hover:text-white transition-all">
-                                Ver ficha do personagem
-                            </button>
-                        </div>
-
-                        <div class="group flex flex-col p-6 rounded-xl border border-primary/10 bg-slate-50 dark:bg-primary/5 hover:border-primary/40 transition-all">
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                    <span class="material-symbols-outlined text-3xl">health_cross</span>
-                                </div>
-                                <span class="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-600 text-xs font-bold uppercase tracking-wider">
-                                    Favorito
-                                </span>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 font-display mb-1">
-                                Brother Thomas
-                            </h3>
-                            <div class="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-sm mb-6">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">person</span>
-                                    <span>Humano • Clérigo</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">military_tech</span>
-                                    <span class="font-bold text-primary">Nível 15</span>
-                                </div>
-                            </div>
-                            <button class="mt-auto w-full py-2.5 rounded-lg bg-primary/10 text-primary text-sm font-bold hover:bg-primary hover:text-white transition-all">
-                                Ver ficha do personagem
-                            </button>
-                        </div>
+                        }
                     </div>
+
+                    @if (totalPages > 1)
+                    {
+                        <div class="mt-6 flex justify-center gap-2">
+                            @if (currentPage > 1)
+                            {
+                                <a asp-action="Index"
+                                   asp-route-page="@(currentPage - 1)"
+                                   class="px-3 py-2 rounded-lg border border-border-dark text-sm text-muted-dark hover:bg-surface-dark">
+                                    Anterior
+                                </a>
+                            }
+
+                            @for (var p = 1; p <= totalPages; p++)
+                            {
+                                <a asp-action="Index"
+                                   asp-route-page="@p"
+                                   class="px-3 py-2 rounded-lg text-sm @(p == currentPage ? "bg-primary text-white" : "border border-border-dark text-muted-dark hover:bg-surface-dark")">
+                                    @p
+                                </a>
+                            }
+
+                            @if (currentPage < totalPages)
+                            {
+                                <a asp-action="Index"
+                                   asp-route-page="@(currentPage + 1)"
+                                   class="px-3 py-2 rounded-lg border border-border-dark text-sm text-muted-dark hover:bg-surface-dark">
+                                    Próxima
+                                </a>
+                            }
+                        </div>
+                    }
                 </div>
+
             </div>
         </main>
     </div>

@@ -4,19 +4,12 @@ using RpgBuilderMvc.Infrastructure.Persistence;
 
 namespace RpgBuilderMvc.Controllers;
 
-public class ClassesController : Controller
+public class ClassesController(RpgDbContext db) : Controller
 {
-    private readonly RpgDbContext _db;
-
-    public ClassesController(RpgDbContext db)
-    {
-        _db = db;
-    }
-
     // GET: /Classes
     public async Task<IActionResult> Index()
     {
-        var classes = await _db.Classes
+        var classes = await db.Classes
             .OrderBy(c => c.Name)
             .ToListAsync();
 

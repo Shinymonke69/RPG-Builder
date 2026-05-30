@@ -1,6 +1,6 @@
 namespace RpgBuilderMvc.Domain.Entities;
 
-public class CharacterClass
+public class Class
 {
     public int Id { get; set; }
 
