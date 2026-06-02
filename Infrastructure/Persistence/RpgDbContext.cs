@@ -12,6 +12,9 @@ public class RpgDbContext(DbContextOptions<RpgDbContext> options) : DbContext(op
     public DbSet<Background> Backgrounds => Set<Background>();
     public DbSet<Trait> Traits => Set<Trait>();
     public DbSet<Spell> Spells => Set<Spell>();
+    public DbSet<Skill> Skills => Set<Skill>();
+    public DbSet<CharacterSkill> CharacterSkills => Set<CharacterSkill>();
+    public DbSet<CharacterSpell> CharacterSpells => Set<CharacterSpell>();
 
     public DbSet<Character> Characters => Set<Character>();
 }

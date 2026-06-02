@@ -32,13 +32,12 @@ public class CharactersController(RpgDbContext db) : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        string name,
-        int level,
-        string classIndex,
-        string raceIndex,
-        string backgroundIndex)
+    string name,
+    int level,
+    string classIndex,
+    string raceIndex,
+    string backgroundIndex)
     {
-        // Carregar os nomes das tabelas SRD
         var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
         var race = await db.Races.FirstOrDefaultAsync(r => r.Index == raceIndex);
         var bg = await db.Backgrounds.FirstOrDefaultAsync(b => b.Index == backgroundIndex);
@@ -67,7 +66,12 @@ public class CharactersController(RpgDbContext db) : Controller
             RaceIndex = race.Index,
             RaceName = race.Name,
             BackgroundIndex = bg.Index,
-            BackgroundName = bg.Name
+            BackgroundName = bg.Name,
+
+            Story = "",
+            PersonalityTraits = "",
+            Ideals = "",
+            EquipmentNotes = ""
         };
 
         db.Characters.Add(character);
@@ -82,7 +86,6 @@ public class CharactersController(RpgDbContext db) : Controller
         var character = await db.Characters.FindAsync(id);
         if (character == null) return NotFound();
 
-        // Carregar listas se você quiser permitir mudar classe/raça/background
         var classes = await db.Classes.OrderBy(c => c.Name).ToListAsync();
         var races = await db.Races.OrderBy(r => r.Name).ToListAsync();
         var backgrounds = await db.Backgrounds.OrderBy(b => b.Name).ToListAsync();
@@ -97,8 +100,18 @@ public class CharactersController(RpgDbContext db) : Controller
     // POST: /Characters/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, string name, int level, string status,
-        string classIndex, string raceIndex, string backgroundIndex)
+    public async Task<IActionResult> Edit(
+    int id,
+    string name,
+    int level,
+    string status,
+    string classIndex,
+    string raceIndex,
+    string backgroundIndex,
+    string? story,
+    string? personalityTraits,
+    string? ideals,
+    string? equipmentNotes)
     {
         var character = await db.Characters.FindAsync(id);
         if (character == null) return NotFound();
@@ -106,6 +119,7 @@ public class CharactersController(RpgDbContext db) : Controller
         var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
         var race = await db.Races.FirstOrDefaultAsync(r => r.Index == raceIndex);
         var bg = await db.Backgrounds.FirstOrDefaultAsync(b => b.Index == backgroundIndex);
+
         if (cls == null || race == null || bg == null)
         {
             ModelState.AddModelError("", "Classe, raça ou antecedente inválido.");
@@ -131,6 +145,11 @@ public class CharactersController(RpgDbContext db) : Controller
         character.BackgroundIndex = bg.Index;
         character.BackgroundName = bg.Name;
 
+        character.Story = story;
+        character.PersonalityTraits = personalityTraits;
+        character.Ideals = ideals;
+        character.EquipmentNotes = equipmentNotes;
+
         await db.SaveChangesAsync();
 
         return RedirectToAction("Index", "Home");
@@ -147,7 +166,6 @@ public class CharactersController(RpgDbContext db) : Controller
         db.Characters.Remove(character);
         await db.SaveChangesAsync();
 
-        // Volta para a Home ou para Characters/Index, você escolhe:
         return RedirectToAction("Index", "Home");
     }
 }
