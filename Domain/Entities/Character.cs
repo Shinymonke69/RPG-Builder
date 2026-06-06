@@ -14,6 +14,13 @@ public class Character
     public string BackgroundIndex { get; set; } = null!;
     public string BackgroundName { get; set; } = null!;
 
+    public int Strength { get; set; }
+    public int Dexterity { get; set; }
+    public int Constitution { get; set; }
+    public int Intelligence { get; set; }
+    public int Wisdom { get; set; }
+    public int Charisma { get; set; }
+
     // Novos campos
     public string? Story { get; set; }
     public string? PersonalityTraits { get; set; }

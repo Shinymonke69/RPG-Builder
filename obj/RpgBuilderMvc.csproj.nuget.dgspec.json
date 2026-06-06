@@ -61,6 +61,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[10.0.7, )"
+            },
+            "RandomNameGeneratorNG": {
+              "target": "Package",
+              "version": "[2.0.2, )"
             }
           },
           "imports": [

@@ -1,4 +1,4 @@
-@model RpgBuilderMvc.Domain.Entities.Character
+@model RpgBuilderMvc.Application.ViewModels.CharacterEditViewModel
 
 @{
     ViewData["Title"] = "Editar Personagem";
@@ -11,7 +11,7 @@
 }
 
 <form asp-action="Edit" asp-controller="Characters" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
+    <input type="hidden" name="id" value="@Model.Character.Id" />
     <main class="flex-1 px-4 lg:px-40 py-8">
         <div class="layout-content-container flex flex-col max-w-[1024px] mx-auto gap-8">
             <!-- Character Hero Section -->
@@ -30,25 +30,29 @@
                     <input name="name"
                         class="bg-transparent border-none text-3xl font-bold p-0 focus:ring-0 text-slate-900 dark:text-white"
                         type="text"
-                        value="@Model.Name" />
+                        value="@Model.Character.Name" />
                     <div class="flex flex-wrap gap-x-4 gap-y-1 justify-center md:justify-start text-primary font-medium">
                         <span class="flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm">military_tech</span>
                             <span>Nível</span>
                             <input name="level"
                                 type="number"
-                                value="@Model.Level"
+                                value="@Model.Character.Level"
                                 min="0"
                                 max="20"
                                 class="w-16 bg-transparent border border-border-dark/40 rounded px-2 py-0.5 text-sm text-slate-900 dark:text-white focus:ring-1 focus:ring-primary focus:outline-none" />
                         </span>
                         <span class="flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm">person</span>
-                            @Model.RaceName
+                            @Model.Character.RaceName
                         </span>
                         <span class="flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm">auto_fix_high</span>
-                            @Model.ClassName
+                            @Model.Character.ClassName
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm">history_edu</span>
+                            @Model.Character.BackgroundName
                         </span>
                     </div>
                     <div class="mt-4 w-full max-w-sm">
@@ -76,254 +80,37 @@
             <!-- Tabs Navigation -->
             <div class="border-b border-slate-200 dark:border-[#48232c]">
                 <div class="flex gap-8 overflow-x-auto custom-scrollbar">
-                    <a class="border-b-2 border-primary text-primary pb-4 font-bold whitespace-nowrap" href="#">Atributos principais</a>
-                    <a class="border-b-2 border-transparent text-slate-500 hover:text-primary pb-4 font-bold transition-colors whitespace-nowrap" href="#">Perícias &amp; proficiências</a>
-                    <a class="border-b-2 border-transparent text-slate-500 hover:text-primary pb-4 font-bold transition-colors whitespace-nowrap" href="#">Livro de magias</a>
-                    <a class="border-b-2 border-transparent text-slate-500 hover:text-primary pb-4 font-bold transition-colors whitespace-nowrap" href="#">Equipamento</a>
-                    <a class="border-b-2 border-transparent text-slate-500 hover:text-primary pb-4 font-bold transition-colors whitespace-nowrap" href="#">História</a>
+                    <a class="border-b-2 border-primary text-primary pb-4 font-bold whitespace-nowrap" href="#tab-atributos">Atributos principais</a>
+                    <a class="border-b-2 border-transparent text-slate-500 hover:text-primary pb-4 font-bold transition-colors whitespace-nowrap" href="#tab-magias">Livro de magias</a>
+                    <a class="border-b-2 border-transparent text-slate-500 hover:text-primary pb-4 font-bold transition-colors whitespace-nowrap" href="#tab-equipamento">Equipamento</a>
+                    <a class="border-b-2 border-transparent text-slate-500 hover:text-primary pb-4 font-bold transition-colors whitespace-nowrap" href="#tab-historia">História</a>
                 </div>
             </div>
 
-            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-muted-dark mb-1 ml-1">Classe</label>
-                    <select name="classIndex"
-                            class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none">
-                        @foreach (var c in classes)
-                        {
-                            <option value="@c.Index" selected="@(c.Index == Model.ClassIndex)">@c.Name</option>
-                        }
+            <!-- Aqui entram as partials -->
+            @await Html.PartialAsync("_TabAtributos", Model)
+            @await Html.PartialAsync("_TabMagias", Model)
+            @await Html.PartialAsync("_TabEquipamento", Model)
+            @await Html.PartialAsync("_TabHistoria", Model)
+
+            <div class="mt-8 flex justify-end gap-7">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm font-medium text-muted-dark">Status</label>
+                    <select name="status"
+                            class="bg-background border border-border-dark rounded-lg px-3 py-2 text-sm text-slate focus:ring-2 focus:ring-primary focus:outline-none">
+                        <option value="Ativo" selected="@(Model.Character.Status == "Ativo")">Ativo</option>
+                        <option value="Arquivado" selected="@(Model.Character.Status == "Arquivado")">Arquivado</option>
+                        <option value="Favorito" selected="@(Model.Character.Status == "Favorito")">Favorito</option>
                     </select>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-muted-dark mb-1 ml-1">Raça</label>
-                    <select name="raceIndex"
-                            class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none">
-                        @foreach (var r in races)
-                        {
-                            <option value="@r.Index" selected="@(r.Index == Model.RaceIndex)">@r.Name</option>
-                        }
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-muted-dark mb-1 ml-1">Antecedente</label>
-                    <select name="backgroundIndex"
-                            class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none">
-                        @foreach (var b in backgrounds)
-                        {
-                            <option value="@b.Index" selected="@(b.Index == Model.BackgroundIndex)">@b.Name</option>
-                        }
-                    </select>
-                </div>
+
+                <button class="px-6 py-3 rounded-lg border border-border-dark text-muted-dark font-bold hover:bg-surface-dark transition-colors" type="button">
+                    Redefinir alterações
+                </button>
+                <button class="px-10 py-3 rounded-lg bg-green-600 text-white font-bold hover:brightness-110 shadow-lg shadow-primary/20 transition-all" type="submit">
+                    Salvar alterações
+                </button>
             </div>
-
-            <!-- Content Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Left Column: Abilities & Health -->
-                <div class="lg:col-span-4 flex flex-col gap-6">
-                    <!-- Ability Scores -->
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="flex flex-col items-center p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                            <span class="text-xs font-bold text-slate-500 dark:text-[#c992a0]">FORÇA</span>
-                            <span class="text-2xl font-bold">10</span>
-                            <span class="text-sm bg-slate-100 dark:bg-[#48232c] px-2 py-0.5 rounded mt-1">+0</span>
-                        </div>
-                        <div class="flex flex-col items-center p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                            <span class="text-xs font-bold text-slate-500 dark:text-[#c992a0]">DESTREZA</span>
-                            <span class="text-2xl font-bold">14</span>
-                            <span class="text-sm bg-slate-100 dark:bg-[#48232c] px-2 py-0.5 rounded mt-1">+2</span>
-                        </div>
-                        <div class="flex flex-col items-center p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                            <span class="text-xs font-bold text-slate-500 dark:text-[#c992a0]">CONSTITUIÇÃO</span>
-                            <span class="text-2xl font-bold">12</span>
-                            <span class="text-sm bg-slate-100 dark:bg-[#48232c] px-2 py-0.5 rounded mt-1">+1</span>
-                        </div>
-                        <div class="flex flex-col items-center p-4 rounded-xl border border-primary/40 bg-primary/5 dark:bg-primary/10">
-                            <span class="text-xs font-bold text-primary">INTELIGÊNCIA</span>
-                            <span class="text-2xl font-bold">18</span>
-                            <span class="text-sm bg-primary text-white px-2 py-0.5 rounded mt-1">+4</span>
-                        </div>
-                        <div class="flex flex-col items-center p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                            <span class="text-xs font-bold text-slate-500 dark:text-[#c992a0]">SABEDORIA</span>
-                            <span class="text-2xl font-bold">14</span>
-                            <span class="text-sm bg-slate-100 dark:bg-[#48232c] px-2 py-0.5 rounded mt-1">+2</span>
-                        </div>
-                        <div class="flex flex-col items-center p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                            <span class="text-xs font-bold text-slate-500 dark:text-[#c992a0]">CARISMA</span>
-                            <span class="text-2xl font-bold">8</span>
-                            <span class="text-sm bg-slate-100 dark:bg-[#48232c] px-2 py-0.5 rounded mt-1">-1</span>
-                        </div>
-                    </div>
-
-                    <!-- Vital Stats -->
-                    <div class="p-6 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent flex flex-col gap-4">
-                        <div class="flex justify-between items-end">
-                            <div class="flex flex-col">
-                                <span class="text-xs font-bold text-primary">PONTOS DE VIDA</span>
-                                <div class="flex items-baseline gap-1">
-                                    <input class="bg-transparent border-none text-3xl font-bold p-0 w-12 focus:ring-0" type="text" value="28"/>
-                                    <span class="text-slate-400">/ 36</span>
-                                </div>
-                            </div>
-                            <span class="material-symbols-outlined text-primary text-4xl">favorite</span>
-                        </div>
-                        <div class="h-3 w-full bg-slate-200 dark:bg-[#48232c] rounded-full overflow-hidden">
-                            <div class="h-full bg-primary" style="width: 77%;"></div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 mt-2">
-                            <div class="flex flex-col">
-                                <span class="text-[10px] font-bold text-slate-500 dark:text-[#c992a0] uppercase">PV temporários</span>
-                                <input class="bg-slate-100 dark:bg-[#34181f] border-none rounded p-1 text-sm focus:ring-1 focus:ring-primary" type="text" value="5"/>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="text-[10px] font-bold text-slate-500 dark:text-[#c992a0] uppercase">Dados de vida</span>
-                                <div class="text-sm font-bold">5d6</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column: Skills, Inventory, Backstory -->
-                <div class="lg:col-span-8 flex flex-col gap-6">
-                    <!-- Skills List (Scrollable) -->
-                    <div class="p-6 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">list_alt</span>
-                            Perícias &amp; proficiências
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
-                            <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c]">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-primary">circle</span>
-                                    <span class="text-sm">Acrobacia</span>
-                                </div>
-                                <span class="text-sm font-bold">+2</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c]">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-primary">circle</span>
-                                    <span class="text-sm">Adestrar Animais</span>
-                                </div>
-                                <span class="text-sm font-bold">+2</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c]">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1">check_circle</span>
-                                    <span class="text-sm font-bold">Arcanismo</span>
-                                </div>
-                                <span class="text-sm font-bold text-primary">+7</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c]">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-primary">circle</span>
-                                    <span class="text-sm">Atletismo</span>
-                                </div>
-                                <span class="text-sm font-bold">+0</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c]">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1">check_circle</span>
-                                    <span class="text-sm font-bold">História</span>
-                                </div>
-                                <span class="text-sm font-bold text-primary">+7</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c]">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-primary">circle</span>
-                                    <span class="text-sm">Intuição</span>
-                                </div>
-                                <span class="text-sm font-bold">+2</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c]">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1">check_circle</span>
-                                    <span class="text-sm font-bold">Investigação</span>
-                                </div>
-                                <span class="text-sm font-bold text-primary">+7</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c]">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-primary">circle</span>
-                                    <span class="text-sm">Percepção</span>
-                                </div>
-                                <span class="text-sm font-bold">+2</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Backstory & Personality -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="p-6 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary">history_edu</span>
-                                História
-                            </h3>
-                            <textarea name="story"
-                                class="w-full bg-transparent border-none p-0 text-sm leading-relaxed resize-none focus:ring-0 custom-scrollbar h-32"
-                                placeholder="Escreva aqui a história de origem do seu personagem...">@Model.Story</textarea>
-                        </div>
-                        <div class="flex flex-col gap-4">
-                            <div class="p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                                <span class="text-[10px] font-bold text-primary uppercase">Traços de personalidade</span>
-                                <textarea name="personalityTraits"
-                                        class="mt-1 w-full bg-transparent border-none p-0 text-sm leading-relaxed resize-none focus:ring-0 custom-scrollbar h-16"
-                                        placeholder="Descreva aqui os traços de personalidade do seu personagem...">@Model.PersonalityTraits</textarea>
-                            </div>
-                            <div class="p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                                <span class="text-[10px] font-bold text-primary uppercase">Ideais</span>
-                                <textarea name="ideals"
-                                        class="mt-1 w-full bg-transparent border-none p-0 text-sm leading-relaxed resize-none focus:ring-0 custom-scrollbar h-16"
-                                        placeholder="Quais são os ideais do seu personagem?">@Model.Ideals</textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Equipment Preview -->
-                    <div class="p-6 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary">backpack</span>
-                                Equipamento
-                            </h3>
-                            <div class="flex gap-2 text-xs font-bold bg-slate-100 dark:bg-[#48232c] px-3 py-1 rounded-full">
-                                <span class="text-yellow-600 dark:text-yellow-500">125 PO</span>
-                                <span class="text-slate-400">|</span>
-                                <span class="text-slate-500">42/150 lb</span>
-                            </div>
-                        </div>
-
-                        <!-- sua lista visual de itens permanece aqui -->
-
-                        <button class="w-full mt-4 py-2 text-primary font-bold text-sm border border-dashed border-primary/40 rounded-lg hover:bg-primary/5 transition-colors" type="button">
-                            + Adicionar item
-                        </button>
-
-                        <div class="mt-4">
-                            <label class="text-[10px] font-bold text-primary uppercase">Notas de equipamento</label>
-                            <textarea name="equipmentNotes"
-                                    class="mt-1 w-full bg-transparent border border-border-dark/40 rounded-lg p-2 text-sm leading-relaxed resize-none focus:ring-1 focus:ring-primary custom-scrollbar h-20"
-                                    placeholder="Use este espaço para anotar itens especiais, mudanças de equipamento, etc.">@Model.EquipmentNotes</textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-8 flex justify-end gap-4"></div>
-            <div class="flex items-center gap-2">
-                <label class="text-sm font-medium text-muted-dark">Status</label>
-                <select name="status"
-                        class="bg-background border border-border-dark rounded-lg px-3 py-2 text-sm text-slate focus:ring-2 focus:ring-primary focus:outline-none">
-                    <option value="Ativo" selected="@(Model.Status == "Ativo")">Ativo</option>
-                    <option value="Arquivado" selected="@(Model.Status == "Arquivado")">Arquivado</option>
-                    <option value="Favorito" selected="@(Model.Status == "Favorito")">Favorito</option>
-                </select>
-            </div>
-
-            <button class="px-6 py-3 rounded-lg border border-border-dark text-muted-dark font-bold hover:bg-surface-dark transition-colors" type="button">
-                Redefinir alterações
-            </button>
-            <button class="px-10 py-3 rounded-lg bg-green-600 text-white font-bold hover:brightness-110 shadow-lg shadow-primary/20 transition-all" type="submit">
-                Salvar alterações
-            </button>
-        </div>  
+        </div>
     </main>
 </form>

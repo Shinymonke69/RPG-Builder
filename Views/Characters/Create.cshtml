@@ -5,7 +5,9 @@
     var classes = ViewBag.Classes as List<RpgBuilderMvc.Domain.Entities.Class> ?? new();
     var races = ViewBag.Races as List<RpgBuilderMvc.Domain.Entities.Race> ?? new();
     var backgrounds = ViewBag.Backgrounds as List<RpgBuilderMvc.Domain.Entities.Background> ?? new();
+    var randomCharacter = ViewBag.RandomCharacter as RpgBuilderMvc.Domain.Entities.Character;
 }
+
 <form asp-action="Create" asp-controller="Characters" method="post">
     <main class="flex-1 px-4 md:px-20 py-8 max-w-6xl mx-auto w-full">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
@@ -17,41 +19,26 @@
                 <h1 class="text-5xl font-black tracking-tight">Novo Personagem</h1>
                 <p class="text-muted-dark text-lg">Aproveite o poder da aleatoriedade e crie o seu próprio personagem.</p>
             </div>
-            <button class="flex min-w-[240px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-primary hover:bg-primary/90 text-white gap-3 text-lg font-bold transition-all shadow-lg shadow-primary/20">
+            <a asp-controller="Characters"
+            asp-action="GenerateRandom"
+            class="flex min-w-[240px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-primary hover:bg-primary/90 text-white gap-3 text-lg font-bold transition-all shadow-lg shadow-primary/20">
                 <span class="material-symbols-outlined">auto_fix_high</span>
                 <span>Gerar personagem aleatório</span>
-            </button>
+            </a>
         </div>
 
         <div class="mt-8 rounded-2xl bg-blue-550/80 dark:bg-blue-550/70 border border-blue-550/70 shadow-xl p-6 md:p-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-1 flex flex-col gap-6">
                     <div class="rounded-xl bg-surface-dark border border-border-dark p-6">
-                        <!-- Antique Altarpiece Frame -->
-                        <div class="altarpiece-frame relative w-full aspect-[3/4] rounded-t-full p-4 mb-6 border-4 border-wood-light flex flex-col">
-                            <div class="absolute top-2 left-1/2 -translate-x-1/2 flex gap-4">
-                                <div class="carved-detail"></div>
-                                <div class="carved-detail"></div>
-                                <div class="carved-detail"></div>
-                            </div>
-                            <div class="relative flex-1 rounded-t-full overflow-hidden bg-black border-2 border-wood-dark shadow-inner">
-                                <img class="w-full h-full object-cover opacity-90" data-alt="Illustration of a dark fantasy knight in armor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_vceQfwA7WcZnt_p8Iq0BAcc96XyfXV2s9uxMTigDNBJFHW4tssZFdhfsaeCcvHJDgkFBYsScg6D0oaUZRVdTSEh15VRQ8l9Wj-r7Fa7N4GKvoVQI2Z2sYTIjtvYSa56xxFOnMDwR6zYuDwO8xth9NkJjrp2sJJk1-d1286zYZL4tOhpKvJyMjHoBNiSNAi-X7JdimF4VGTDEPG-FMb83c61ELHSe1t7uQnWy_juGVPSPihIA7ktfQjBLdE7IQkDrNjKEryBgHv8"/>
-                                <div class="parchment-overlay absolute inset-0"></div>
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
-                                <button class="absolute bottom-4 right-4 bg-primary text-white p-2 rounded-full shadow-lg z-10 hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined">photo_camera</span>
-                                </button>
-                            </div>
-                            <div class="mt-3 flex justify-between px-2">
-                                <div class="carved-detail scale-75"></div>
-                                <div class="carved-detail scale-75"></div>
-                            </div>
-                        </div>
 
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-muted-dark mb-1 ml-1">Nome do herói</label>
-                                <input name="name"class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none" type="text" value="Aethelgard, o Bravo" />
+                                <input name="name"
+                                    class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none"
+                                    type="text"
+                                    value="@(randomCharacter?.Name ?? ViewBag.RandomName)" />
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-muted-dark mb-1 ml-1">Classe</label>
@@ -59,25 +46,28 @@
                                         class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none">
                                     @foreach (var c in classes)
                                     {
-                                        <option value="@c.Index">@c.Name</option>
+                                        var selected = randomCharacter != null && c.Index == randomCharacter.ClassIndex;
+                                        <option value="@c.Index" selected="@(selected)">@c.Name</option>
                                     }
                                 </select>
 
                                 <label class="block text-sm font-medium text-muted-dark mb-1 ml-1 mt-4">Raça</label>
-                                <select name="raceIndex"
-                                        class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none">
+                                <select name="raceIndex" class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none">
                                     @foreach (var r in races)
                                     {
-                                        <option value="@r.Index">@r.Name</option>
+                                        var selected = randomCharacter != null && r.Index == randomCharacter.RaceIndex;
+                                        <option value="@r.Index" selected="@(selected)">@r.Name</option>
                                     }
                                 </select>
 
                                 <label class="block text-sm font-medium text-muted-dark mb-1 ml-1 mt-4">Antecedente</label>
-                                <select name="backgroundIndex"
-                                        class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none">
+                                <select name="backgroundIndex" class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none">
+                                    @{
+                                        var defaultBg = randomCharacter != null ? randomCharacter.BackgroundIndex : (string)ViewBag.RandomBackground;
+                                    }
                                     @foreach (var b in backgrounds)
                                     {
-                                        <option value="@b.Index">@b.Name</option>
+                                        <option value="@b.Index" selected="@(b.Index == defaultBg)">@b.Name</option>
                                     }
                                 </select>
                             </div>
@@ -91,72 +81,38 @@
                             <span class="material-symbols-outlined text-primary">analytics</span>
                             <h2 class="text-2xl font-bold">Atributos</h2>
                         </div>
+                        @{
+                            var stats = new[] {
+                                new { Name = "Força", Key = "strength", Value = randomCharacter?.Strength ?? ViewBag.DefaultStats[0] },
+                                new { Name = "Destreza", Key = "dexterity", Value = randomCharacter?.Dexterity ?? ViewBag.DefaultStats[1] },
+                                new { Name = "Constituição", Key = "constitution", Value = randomCharacter?.Constitution ?? ViewBag.DefaultStats[2] },
+                                new { Name = "Inteligência", Key = "intelligence", Value = randomCharacter?.Intelligence ?? ViewBag.DefaultStats[3] },
+                                new { Name = "Sabedoria", Key = "wisdom", Value = randomCharacter?.Wisdom ?? ViewBag.DefaultStats[4] },
+                                new { Name = "Carisma", Key = "charisma", Value = randomCharacter?.Charisma ?? ViewBag.DefaultStats[5] }
+                            };
+                        }
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            <div class="flex flex-col p-4 rounded-xl bg-surface-dark border border-border-dark group hover:border-primary/50 transition-colors">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs font-bold text-muted-dark uppercase tracking-widest">Força</span>
-                                    <span class="text-primary text-xs font-bold">+3</span>
-                                </div>
-                                <input class="w-full bg-transparent border-none p-0 text-3xl font-bold text-muted-dark focus:ring-0" type="number" value="16"/>
-                                <div class="w-full h-1 bg-background-dark mt-3 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary w-4/5"></div>
-                                </div>
-                            </div>
+                            @foreach(var stat in stats) {
+                                int val = stat.Value;
+                                int mod = (int)Math.Floor((val - 10) / 2.0);
+                                string modText = mod >= 0 ? $"+{mod}" : mod.ToString();
+                                int percent = Math.Min(100, Math.Max(0, (val * 100) / 20));
 
-                            <div class="flex flex-col p-4 rounded-xl bg-surface-dark border border-border-dark group hover:border-primary/50 transition-colors">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs font-bold text-muted-dark uppercase tracking-widest">Destreza</span>
-                                    <span class="text-primary text-xs font-bold">+3</span>
+                                <div class="flex flex-col p-4 rounded-xl bg-surface-dark border border-border-dark group hover:border-primary/50 transition-colors">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-xs font-bold text-muted-dark uppercase tracking-widest">@stat.Name</span>
+                                        <span class="text-primary text-xs font-bold stat-modifier">@modText</span>
+                                    </div>
+                                    <input name="@stat.Key"
+                                        class="w-full bg-transparent border-none p-0 text-3xl font-bold text-muted-dark focus:ring-0 stat-input"
+                                        type="number"
+                                        min="8"
+                                        value="@val" />
+                                    <div class="w-full h-1 bg-background-dark mt-3 rounded-full overflow-hidden">
+                                        <div class="h-full bg-primary stat-bar transition-all" style="width: @(percent)%;"></div>
+                                    </div>
                                 </div>
-                                <input class="w-full bg-transparent border-none p-0 text-3xl font-bold text-muted-dark focus:ring-0" type="number" value="16"/>
-                                <div class="w-full h-1 bg-background-dark mt-3 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary w-4/5"></div>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col p-4 rounded-xl bg-surface-dark border border-border-dark group hover:border-primary/50 transition-colors">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs font-bold text-muted-dark uppercase tracking-widest">Constituição</span>
-                                    <span class="text-primary text-xs font-bold">+3</span>
-                                </div>
-                                <input class="w-full bg-transparent border-none p-0 text-3xl font-bold text-muted-dark focus:ring-0" type="number" value="16"/>
-                                <div class="w-full h-1 bg-background-dark mt-3 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary w-4/5"></div>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col p-4 rounded-xl bg-surface-dark border border-border-dark group hover:border-primary/50 transition-colors">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs font-bold text-muted-dark uppercase tracking-widest">Inteligência</span>
-                                    <span class="text-primary text-xs font-bold">+3</span>
-                                </div>
-                                <input class="w-full bg-transparent border-none p-0 text-3xl font-bold text-muted-dark focus:ring-0" type="number" value="16"/>
-                                <div class="w-full h-1 bg-background-dark mt-3 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary w-4/5"></div>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col p-4 rounded-xl bg-surface-dark border border-border-dark group hover:border-primary/50 transition-colors">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs font-bold text-muted-dark uppercase tracking-widest">Sabedoria</span>
-                                    <span class="text-primary text-xs font-bold">+3</span>
-                                </div>
-                                <input class="w-full bg-transparent border-none p-0 text-3xl font-bold text-muted-dark focus:ring-0" type="number" value="16"/>
-                                <div class="w-full h-1 bg-background-dark mt-3 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary w-4/5"></div>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col p-4 rounded-xl bg-surface-dark border border-border-dark group hover:border-primary/50 transition-colors">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs font-bold text-muted-dark uppercase tracking-widest">Carisma</span>
-                                    <span class="text-primary text-xs font-bold">+3</span>
-                                </div>
-                                <input class="w-full bg-transparent border-none p-0 text-3xl font-bold text-muted-dark focus:ring-0" type="number" value="16"/>
-                                <div class="w-full h-1 bg-background-dark mt-3 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary w-4/5"></div>
-                                </div>
-                            </div>
+                            }
                         </div>
                     </div>
 
@@ -209,7 +165,10 @@
                         <button class="px-6 py-3 rounded-lg border border-border-dark text-muted-dark font-bold hover:bg-surface-dark transition-colors">
                             Redefinir alterações
                         </button>
-                        <button class="px-10 py-3 rounded-lg bg-primary text-white font-bold hover:brightness-110 shadow-lg shadow-primary/20 transition-all">
+                        <button type="submit"
+                                name="mode"
+                                value="manual"
+                                class="px-10 py-3 rounded-lg bg-primary text-white font-bold hover:brightness-110 shadow-lg shadow-primary/20 transition-all">
                             Finalizar herói
                         </button>
                     </div>
@@ -218,4 +177,40 @@
         </div>
     </main>
 </form>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.stat-input').forEach(input => {
+            input.addEventListener('input', function() {
+                let val = parseInt(this.value);
+                if (isNaN(val)) val = 8;
+                
+                // minimum is 8
+                if (val < 8) {
+                    this.value = 8;
+                    val = 8;
+                }
+                
+                // D&D mod logic: Floor((Value - 10) / 2)
+                let mod = Math.floor((val - 10) / 2);
+                let modText = mod >= 0 ? "+" + mod : mod.toString();
+                
+                let container = this.closest('.flex-col');
+                container.querySelector('.stat-modifier').innerText = modText;
+                
+                // update bar visually (max 20)
+                let percent = Math.min(100, Math.max(0, (val * 100) / 20));
+                container.querySelector('.stat-bar').style.width = percent + "%";
+            });
+            
+            // Trigger change event to ensure minimum 8 is applied on blur
+            input.addEventListener('change', function() {
+                if(parseInt(this.value) < 8 || isNaN(parseInt(this.value))) {
+                    this.value = 8;
+                    this.dispatchEvent(new Event('input'));
+                }
+            });
+        });
+    </script>
+}
 

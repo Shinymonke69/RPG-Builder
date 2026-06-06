@@ -542,6 +542,15 @@
           }
         }
       },
+      "RandomNameGeneratorNG/2.0.2": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/RandomNameGeneratorLibrary.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/RandomNameGeneratorLibrary.dll": {}
+        }
+      },
       "SQLitePCLRaw.bundle_e_sqlite3/2.1.11": {
         "type": "package",
         "dependencies": {
@@ -2152,6 +2161,22 @@
         "packageIcon.png"
       ]
     },
+    "RandomNameGeneratorNG/2.0.2": {
+      "sha512": "xUSmAdvSI7OY1F+JTja4XpoO9nb2CX6BLqE4pYmxbPJ+dIll//gB3DPMrtu3AyP5VL9lZs959v7zN8HGubU6Uw==",
+      "type": "package",
+      "path": "randomnamegeneratorng/2.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "lib/net5.0/RandomNameGeneratorLibrary.dll",
+        "lib/net6.0/RandomNameGeneratorLibrary.dll",
+        "lib/netcoreapp3.1/RandomNameGeneratorLibrary.dll",
+        "lib/netstandard2.1/RandomNameGeneratorLibrary.dll",
+        "randomnamegeneratorng.2.0.2.nupkg.sha512",
+        "randomnamegeneratorng.nuspec"
+      ]
+    },
     "SQLitePCLRaw.bundle_e_sqlite3/2.1.11": {
       "sha512": "DC4nA7yWnf4UZdgJDF+9Mus4/cb0Y3Sfgi3gDnAoKNAIBwzkskNAbNbyu+u4atT0ruVlZNJfwZmwiEwE5oz9LQ==",
       "type": "package",
@@ -2438,7 +2463,8 @@
       "Microsoft.EntityFrameworkCore >= 10.0.7",
       "Microsoft.EntityFrameworkCore.Design >= 10.0.7",
       "Microsoft.EntityFrameworkCore.Sqlite >= 10.0.7",
-      "Microsoft.EntityFrameworkCore.Tools >= 10.0.7"
+      "Microsoft.EntityFrameworkCore.Tools >= 10.0.7",
+      "RandomNameGeneratorNG >= 2.0.2"
     ]
   },
   "packageFolders": {
@@ -2501,6 +2527,10 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[10.0.7, )"
+          },
+          "RandomNameGeneratorNG": {
+            "target": "Package",
+            "version": "[2.0.2, )"
           }
         },
         "imports": [

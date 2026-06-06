@@ -14,7 +14,6 @@ public class SrdImporter(Dnd5eClient client, RpgDbContext db)
     {
         await ImportClassesAsync();
         await ImportRacesAsync();
-        await ImportBackgroundsAsync();
         await ImportTraitsAsync();
         await ImportSpellsAsync();
 

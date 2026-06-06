@@ -9,6 +9,6 @@ public class SrdSyncController(SrdImporter importer) : Controller
     public async Task<IActionResult> Run()
     {
         await importer.ImportAllAsync();
-        return Content("SRD import finished (classes, races, backgrounds, traits, spells).");
+        return Content("SRD import finished (classes, races, traits, spells).");
     }
 }

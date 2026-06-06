@@ -213,3 +213,4 @@ C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\bin\Debug\net10.0\ru\Microsoft.Co
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\bin\Debug\net10.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\bin\Debug\net10.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\bin\Debug\net10.0\RandomNameGeneratorLibrary.dll

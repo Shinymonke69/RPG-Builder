@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RpgBuilderMvc.Domain.Entities;
 using RpgBuilderMvc.Infrastructure.Persistence;
+using RpgBuilderMvc.Application.ViewModels;
+using RpgBuilderMvc.Services;
 
 namespace RpgBuilderMvc.Controllers;
 
 public class CharactersController(RpgDbContext db) : Controller
 {
+    private readonly Random random = new();
 
     // GET: /Characters
     public IActionResult Index()
@@ -15,6 +18,7 @@ public class CharactersController(RpgDbContext db) : Controller
     }
 
     // GET: /Characters/Create
+    [HttpGet]
     public async Task<IActionResult> Create()
     {
         var classes = await db.Classes.OrderBy(c => c.Name).ToListAsync();
@@ -24,8 +28,33 @@ public class CharactersController(RpgDbContext db) : Controller
         ViewBag.Classes = classes;
         ViewBag.Races = races;
         ViewBag.Backgrounds = backgrounds;
+        ViewBag.RandomName = NameGenerator.GenerateFullName();
+
+        var standardArray = new[] { 15, 14, 13, 12, 10, 8 };
+        ViewBag.DefaultStats = standardArray.OrderBy(x => random.Next()).ToArray();
+        ViewBag.RandomBackground = backgrounds.Count > 0
+            ? backgrounds[random.Next(backgrounds.Count)].Index
+            : "";
 
         return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GenerateRandom()
+    {
+        var classes = await db.Classes.OrderBy(c => c.Name).ToListAsync();
+        var races = await db.Races.OrderBy(r => r.Name).ToListAsync();
+        var backgrounds = await db.Backgrounds.OrderBy(b => b.Name).ToListAsync();
+
+        ViewBag.Classes = classes;
+        ViewBag.Races = races;
+        ViewBag.Backgrounds = backgrounds;
+
+        var randomCharacter = await GenerateRandomCharacterAsync();
+
+        ViewBag.RandomCharacter = randomCharacter;
+
+        return View("Create");
     }
 
     // POST: /Characters/Create
@@ -36,13 +65,20 @@ public class CharactersController(RpgDbContext db) : Controller
     int level,
     string classIndex,
     string raceIndex,
-    string backgroundIndex)
+    string backgroundIndex,
+    int strength,
+    int dexterity,
+    int constitution,
+    int intelligence,
+    int wisdom,
+    int charisma
+    )
     {
         var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
         var race = await db.Races.FirstOrDefaultAsync(r => r.Index == raceIndex);
         var bg = await db.Backgrounds.FirstOrDefaultAsync(b => b.Index == backgroundIndex);
 
-        if (cls is null || race is null || bg is null)
+        if (cls == null || race == null || bg == null)
         {
             var classes = await db.Classes.OrderBy(c => c.Name).ToListAsync();
             var races = await db.Races.OrderBy(r => r.Name).ToListAsync();
@@ -61,12 +97,20 @@ public class CharactersController(RpgDbContext db) : Controller
             Name = name,
             Level = level,
             Status = "Ativo",
+
             ClassIndex = cls.Index,
             ClassName = cls.Name,
             RaceIndex = race.Index,
             RaceName = race.Name,
             BackgroundIndex = bg.Index,
             BackgroundName = bg.Name,
+
+            Strength = strength,
+            Dexterity = dexterity,
+            Constitution = constitution,
+            Intelligence = intelligence,
+            Wisdom = wisdom,
+            Charisma = charisma,
 
             Story = "",
             PersonalityTraits = "",
@@ -79,8 +123,53 @@ public class CharactersController(RpgDbContext db) : Controller
 
         return RedirectToAction("Index", "Home");
     }
+    private async Task<Character> GenerateRandomCharacterAsync()
+    {
+        var classes = await db.Classes.ToListAsync();
+        var races = await db.Races.ToListAsync();
+        var backgrounds = await db.Backgrounds.ToListAsync();
 
-    // GET: /Characters/Edit/5
+        if (classes.Count == 0 || races.Count == 0 || backgrounds.Count == 0)
+            throw new InvalidOperationException("É preciso ter classes, raças e antecedentes cadastrados.");
+
+        var cls = classes[random.Next(classes.Count)];
+        var race = races[random.Next(races.Count)];
+        var bg = backgrounds[random.Next(backgrounds.Count)];
+
+        int RollStat() => random.Next(8, 19); // 8–18
+
+        string fullName = NameGenerator.GenerateFullName();
+
+        var character = new Character
+        {
+            Name = fullName,
+            Level = random.Next(1, 21),
+            Status = "Ativo",
+
+            ClassIndex = cls.Index,
+            ClassName = cls.Name,
+            RaceIndex = race.Index,
+            RaceName = race.Name,
+            BackgroundIndex = bg.Index,
+            BackgroundName = bg.Name,
+
+            Strength = RollStat(),
+            Dexterity = RollStat(),
+            Constitution = RollStat(),
+            Intelligence = RollStat(),
+            Wisdom = RollStat(),
+            Charisma = RollStat(),
+
+            Story = "",
+            PersonalityTraits = "",
+            Ideals = "",
+            EquipmentNotes = ""
+        };
+
+        return character;
+    }
+
+    // POST: /Characters/Edit/5
     public async Task<IActionResult> Edit(int id)
     {
         var character = await db.Characters.FindAsync(id);
@@ -94,65 +183,68 @@ public class CharactersController(RpgDbContext db) : Controller
         ViewBag.Races = races;
         ViewBag.Backgrounds = backgrounds;
 
-        return View(character);
+        // se você quiser continuar com ViewModel:
+        var vm = new CharacterEditViewModel
+        {
+            Character = character,
+            // se quiser, também pode por as listas aqui:
+            Classes = classes,
+            Races = races,
+            Backgrounds = backgrounds,
+            AllSkills = await db.Skills.OrderBy(s => s.Name).ToListAsync(),
+            CharacterSkills = await db.CharacterSkills
+                .Include(cs => cs.Skill)
+                .Where(cs => cs.CharacterId == id)
+                .ToListAsync(),
+            AllSpells = await db.Spells
+                .OrderBy(s => s.Level).ThenBy(s => s.Name).ToListAsync(),
+            CharacterSpells = await db.CharacterSpells
+                .Include(cs => cs.Spell)
+                .Where(cs => cs.CharacterId == id)
+                .ToListAsync()
+        };
+
+        return View(vm);
     }
 
     // POST: /Characters/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(
-    int id,
-    string name,
-    int level,
-    string status,
-    string classIndex,
-    string raceIndex,
-    string backgroundIndex,
-    string? story,
-    string? personalityTraits,
-    string? ideals,
-    string? equipmentNotes)
+    public async Task<IActionResult> Edit(int id, string name, int level, string status, string classIndex, string raceIndex, string backgroundIndex, string story, string personalityTraits, string ideals, string equipmentNotes)
     {
         var character = await db.Characters.FindAsync(id);
         if (character == null) return NotFound();
 
-        var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
-        var race = await db.Races.FirstOrDefaultAsync(r => r.Index == raceIndex);
-        var bg = await db.Backgrounds.FirstOrDefaultAsync(b => b.Index == backgroundIndex);
-
-        if (cls == null || race == null || bg == null)
-        {
-            ModelState.AddModelError("", "Classe, raça ou antecedente inválido.");
-
-            var classes = await db.Classes.OrderBy(c => c.Name).ToListAsync();
-            var races = await db.Races.OrderBy(r => r.Name).ToListAsync();
-            var backgrounds = await db.Backgrounds.OrderBy(b => b.Name).ToListAsync();
-
-            ViewBag.Classes = classes;
-            ViewBag.Races = races;
-            ViewBag.Backgrounds = backgrounds;
-
-            return View(character);
-        }
-
         character.Name = name;
         character.Level = level;
-        character.Status = status;
-        character.ClassIndex = cls.Index;
-        character.ClassName = cls.Name;
-        character.RaceIndex = race.Index;
-        character.RaceName = race.Name;
-        character.BackgroundIndex = bg.Index;
-        character.BackgroundName = bg.Name;
+        character.Status = status ?? "Ativo";
 
-        character.Story = story;
-        character.PersonalityTraits = personalityTraits;
-        character.Ideals = ideals;
-        character.EquipmentNotes = equipmentNotes;
+        var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
+        if (cls != null) {
+            character.ClassIndex = cls.Index;
+            character.ClassName = cls.Name;
+        }
+
+        var race = await db.Races.FirstOrDefaultAsync(r => r.Index == raceIndex);
+        if (race != null) {
+            character.RaceIndex = race.Index;
+            character.RaceName = race.Name;
+        }
+
+        var bg = await db.Backgrounds.FirstOrDefaultAsync(b => b.Index == backgroundIndex);
+        if (bg != null) {
+            character.BackgroundIndex = bg.Index;
+            character.BackgroundName = bg.Name;
+        }
+
+        character.Story = story ?? "";
+        character.PersonalityTraits = personalityTraits ?? "";
+        character.Ideals = ideals ?? "";
+        character.EquipmentNotes = equipmentNotes ?? "";
 
         await db.SaveChangesAsync();
 
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction(nameof(Edit), new { id = character.Id });
     }
 
     // POST: /Characters/Delete/5
