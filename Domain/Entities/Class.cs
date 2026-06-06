@@ -12,5 +12,6 @@ public class Class
 
     public string Proficiencies { get; set; } = "";     
     public string SavingThrows { get; set; } = "";      
-    public string Subclasses { get; set; } = "";        
+    public string Subclasses { get; set; } = "";
+    public string StartingEquipment { get; set; } = "";    
 }

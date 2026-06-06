@@ -32,9 +32,52 @@ public class CharactersController(RpgDbContext db) : Controller
 
         var standardArray = new[] { 15, 14, 13, 12, 10, 8 };
         ViewBag.DefaultStats = standardArray.OrderBy(x => random.Next()).ToArray();
-        ViewBag.RandomBackground = backgrounds.Count > 0
+
+        // escolhe um background aleatório para começar
+        var randomBgIndex = backgrounds.Count > 0
             ? backgrounds[random.Next(backgrounds.Count)].Index
             : "";
+
+        ViewBag.RandomBackground = randomBgIndex;
+
+        // monta texto de traços do background selecionado
+        var selectedBg = backgrounds.FirstOrDefault(b => b.Index == randomBgIndex);
+
+        if (selectedBg != null)
+        {
+            // aqui usamos os campos que você preencheu no Program.cs [web:246][web:247]
+            var parts = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Feature))
+                parts.Add($"Característica: {selectedBg.Feature}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Skills))
+                parts.Add($"Perícias: {selectedBg.Skills}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Languages))
+                parts.Add($"Idiomas: {selectedBg.Languages}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Tools))
+                parts.Add($"Ferramentas: {selectedBg.Tools}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.PersonalityTraits))
+                parts.Add($"Traços de personalidade: {selectedBg.PersonalityTraits}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Ideals))
+                parts.Add($"Ideais: {selectedBg.Ideals}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Bonds))
+                parts.Add($"Laços: {selectedBg.Bonds}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Flaws))
+                parts.Add($"Defeitos: {selectedBg.Flaws}");
+
+            ViewBag.BackgroundTraitsText = string.Join("\n", parts);
+        }
+        else
+        {
+            ViewBag.BackgroundTraitsText = "";
+        }
 
         return View();
     }
@@ -51,8 +94,47 @@ public class CharactersController(RpgDbContext db) : Controller
         ViewBag.Backgrounds = backgrounds;
 
         var randomCharacter = await GenerateRandomCharacterAsync();
-
         ViewBag.RandomCharacter = randomCharacter;
+
+        var standardArray = new[] { 15, 14, 13, 12, 10, 8 };
+        ViewBag.DefaultStats = standardArray.OrderBy(x => random.Next()).ToArray();
+
+        // monta texto de traços do background gerado
+        var selectedBg = backgrounds.FirstOrDefault(b => b.Index == randomCharacter.BackgroundIndex);
+        if (selectedBg != null)
+        {
+            var parts = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Feature))
+                parts.Add($"Característica: {selectedBg.Feature}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Skills))
+                parts.Add($"Perícias: {selectedBg.Skills}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Languages))
+                parts.Add($"Idiomas: {selectedBg.Languages}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Tools))
+                parts.Add($"Ferramentas: {selectedBg.Tools}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.PersonalityTraits))
+                parts.Add($"Traços de personalidade: {selectedBg.PersonalityTraits}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Ideals))
+                parts.Add($"Ideais: {selectedBg.Ideals}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Bonds))
+                parts.Add($"Laços: {selectedBg.Bonds}");
+
+            if (!string.IsNullOrWhiteSpace(selectedBg.Flaws))
+                parts.Add($"Defeitos: {selectedBg.Flaws}");
+
+            ViewBag.BackgroundTraitsText = string.Join("\n", parts);
+        }
+        else
+        {
+            ViewBag.BackgroundTraitsText = "";
+        }
 
         return View("Create");
     }

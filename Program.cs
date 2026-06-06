@@ -50,9 +50,11 @@ var skills = new[]
     new Skill { Index = "performance", Name = "Atuação", Ability = "CHA" },
     new Skill { Index = "persuasion", Name = "Persuasão", Ability = "CHA" },
 };
-using (var scope = app.Services.CreateScope())
+if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<RpgDbContext>();
+
     if (!db.Skills.Any())
     {
         db.Skills.AddRange(skills);
@@ -271,12 +273,152 @@ using (var scope = app.Services.CreateScope())
         }
     };
 
+    var srd = scope.ServiceProvider.GetRequiredService<SrdImporter>();
+    await srd.ImportAllAsync();
+
+    // ── StartingEquipment por classe ─────────────────────────
+    var barbarianEquip = new[]
+    {
+        "Arma marcial pesada",
+        "Arma simples corpo a corpo",
+        "Pacote de explorador",
+        "Arma simples de arremesso"
+    };
+    var bardEquip = new[]
+    {
+        "Arma simples corpo a corpo",
+        "Pacote de diplomata ou de artista",
+        "Um instrumento musical à escolha",
+        "Armadura leve"
+    };
+    var clericEquip = new[]
+    {
+        "Arma simples corpo a corpo",
+        "Armadura média",
+        "Arma simples à distância",
+        "Pacote de sacerdote",
+        "Escudo",
+        "Símbolo sagrado"
+    };
+    var druidEquip = new[]
+    {
+        "Escudo de madeira",
+        "Arma simples corpo a corpo",
+        "Pacote de explorador",
+        "Foco druídico"
+    };
+    var fighterEquip = new[]
+    {
+        "Armadura pesada",
+        "Arma marcial e escudo",
+        "Arma simples à distância",
+        "Pacote de explorador"
+    };
+    var monkEquip = new[]
+    {
+        "Arma simples corpo a corpo",
+        "Pacote de explorador",
+        "Arma simples de arremesso",
+        "Roupas de monge"
+    };
+    var paladinEquip = new[]
+    {
+        "Arma marcial e escudo",
+        "Armadura pesada",
+        "Arma simples à distância",
+        "Pacote de sacerdote",
+        "Símbolo sagrado"
+    };
+    var rangerEquip = new[]
+    {
+        "Armadura leve",
+        "Duas armas simples corpo a corpo",
+        "Pacote de explorador",
+        "Arma à distância"
+    };
+    var rogueEquip = new[]
+    {
+        "Arma simples à distância",
+        "Arma corpo a corpo leve",
+        "Pacote de ladrão",
+        "Armadura leve",
+        "Kit de ladrão"
+    };
+    var sorcererEquip = new[]
+    {
+        "Bordão",
+        "Foco arcano",
+        "Pacote de explorador",
+        "Duas armas leves"
+    };
+    var warlockEquip = new[]
+    {
+        "Arma simples corpo a corpo",
+        "Foco arcano",
+        "Pacote de estudioso",
+        "Armadura leve",
+        "Arma simples à distância"
+    };
+    var wizardEquip = new[]
+    {
+        "Bordão",
+        "Bolsa de componentes",
+        "Pacote de estudioso",
+        "Livro de magias"
+    };
+
+    var classEquipments = new Dictionary<string, string>
+    {
+        ["barbarian"] = string.Join("\n", barbarianEquip),
+        ["bard"] = string.Join("\n", bardEquip),
+        ["cleric"] = string.Join("\n", clericEquip),
+        ["druid"] = string.Join("\n", druidEquip),
+        ["fighter"] = string.Join("\n", fighterEquip),
+        ["monk"] = string.Join("\n", monkEquip),
+        ["paladin"] = string.Join("\n", paladinEquip),
+        ["ranger"] = string.Join("\n", rangerEquip),
+        ["rogue"] = string.Join("\n", rogueEquip),
+        ["sorcerer"] = string.Join("\n", sorcererEquip),
+        ["warlock"] = string.Join("\n", warlockEquip),
+        ["wizard"] = string.Join("\n", wizardEquip)
+    };
+
+    foreach (var kvp in classEquipments)
+    {
+        var classIndex = kvp.Key;
+        var equipmentText = kvp.Value;
+
+        var cls = db.Classes.FirstOrDefault(c => c.Index == classIndex);
+        if (cls != null)
+        {
+            cls.StartingEquipment = equipmentText;
+        }
+    }
+
+
+    var customIndexes = customBackgrounds.Select(b => b.Index).ToHashSet();
+    var toRemove = db.Backgrounds.Where(b => !customIndexes.Contains(b.Index)).ToList();
+    if (toRemove.Count > 0)
+        db.Backgrounds.RemoveRange(toRemove);
 
     foreach (var bg in customBackgrounds)
     {
-        if (!db.Backgrounds.Any(b => b.Index == bg.Index))
+        var existing = db.Backgrounds.FirstOrDefault(b => b.Index == bg.Index);
+        if (existing == null)
         {
             db.Backgrounds.Add(bg);
+        }
+        else
+        {
+            existing.Name = bg.Name;
+            existing.Feature = bg.Feature;
+            existing.Skills = bg.Skills;
+            existing.Languages = bg.Languages;
+            existing.Tools = bg.Tools;
+            existing.PersonalityTraits = bg.PersonalityTraits;
+            existing.Ideals = bg.Ideals;
+            existing.Bonds = bg.Bonds;
+            existing.Flaws = bg.Flaws;
         }
     }
     db.SaveChanges();

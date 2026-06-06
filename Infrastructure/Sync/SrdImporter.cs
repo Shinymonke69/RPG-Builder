@@ -45,6 +45,7 @@ public class SrdImporter(Dnd5eClient client, RpgDbContext db)
                 existing.Proficiencies = entity.Proficiencies;
                 existing.SavingThrows = entity.SavingThrows;
                 existing.Subclasses = entity.Subclasses;
+                existing.StartingEquipment = entity.StartingEquipment;
             }
         }
     }
@@ -63,17 +64,35 @@ public class SrdImporter(Dnd5eClient client, RpgDbContext db)
             ? ""
             : string.Join(", ", dto.Subclasses.Select(p => p.Name));
 
+        var translatedName = ClassNameTranslations.TryGetValue(dto.Index, out var ptName)? ptName : dto.Name;
+
         return new Class
         {
             Index = dto.Index,
-            Name = dto.Name,
+            Name = translatedName,
             HitDie = dto.Hit_Die,
             Proficiencies = profs,
             SavingThrows = saves,
-            Subclasses = subclasses
+            Subclasses = subclasses,
+            StartingEquipment = "" 
         };
     }
 
+    private static readonly Dictionary<string, string> ClassNameTranslations = new()
+    {
+        ["barbarian"] = "Bárbaro",
+        ["bard"] = "Bardo",
+        ["cleric"] = "Clérigo",
+        ["druid"] = "Druida",
+        ["fighter"] = "Guerreiro",
+        ["monk"] = "Monge",
+        ["paladin"] = "Paladino",
+        ["ranger"] = "Patrulheiro",
+        ["rogue"] = "Ladino",
+        ["sorcerer"] = "Feiticeiro",
+        ["warlock"] = "Bruxo",
+        ["wizard"] = "Mago"
+    };
 
     private async Task ImportRacesAsync()
     {
