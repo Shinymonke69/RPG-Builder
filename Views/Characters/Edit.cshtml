@@ -19,13 +19,6 @@
                 <span class="material-symbols-outlined text-base">arrow_back</span>
             </a>
             <div class="flex flex-col md:flex-row gap-6 items-center md:items-start p-6 rounded-xl border border-slate-200 dark:border-[#48232c] parchment-effect">
-                <div class="relative group">
-                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-primary/50" data-alt="Retrato de um mago elfo alto e régio com olhos brilhantes" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDxQqXEqfpB8sd3MF16qd0z8tRmcPYTCeo4rFwp6Auoqkx_XSru-WODGti8zUEWVQXCkpSrgtRaLqKdRfdJt_gZeEemtR5nqc6TsD1tYj3LWR7yTdMPsMdKd-jPaPD-PTq8DjGZHewYxyIFwraiYrXNVcwf6B1MI9KyqdE23rkoJ4WzXUMNOBXjrhBn6e7vs1P8WbQCBPSmRr1fyZNzbFzr_xJjdRC4zTNNnCEnJVmIDhKZqUmTxIq3BWVI4mw4Gh_Xx1s2bvZJ-2U");'>
-                    </div>
-                    <button class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full shadow-lg">
-                        <span class="material-symbols-outlined text-sm">edit</span>
-                    </button>
-                </div>
                 <div class="flex flex-col flex-1 gap-2 text-center md:text-left">
                     <input name="name"
                         class="bg-transparent border-none text-3xl font-bold p-0 focus:ring-0 text-slate-900 dark:text-white"
@@ -83,7 +76,6 @@
                     <a class="border-b-2 border-primary text-primary pb-4 font-bold whitespace-nowrap" href="#tab-atributos">Atributos principais</a>
                     <a class="border-b-2 border-transparent text-slate-500 hover:text-primary pb-4 font-bold transition-colors whitespace-nowrap" href="#tab-magias">Livro de magias</a>
                     <a class="border-b-2 border-transparent text-slate-500 hover:text-primary pb-4 font-bold transition-colors whitespace-nowrap" href="#tab-equipamento">Equipamento</a>
-                    <a class="border-b-2 border-transparent text-slate-500 hover:text-primary pb-4 font-bold transition-colors whitespace-nowrap" href="#tab-historia">História</a>
                 </div>
             </div>
 
@@ -91,7 +83,6 @@
             @await Html.PartialAsync("_TabAtributos", Model)
             @await Html.PartialAsync("_TabMagias", Model)
             @await Html.PartialAsync("_TabEquipamento", Model)
-            @await Html.PartialAsync("_TabHistoria", Model)
 
             <div class="mt-8 flex justify-end gap-7">
                 <div class="flex items-center gap-2">
@@ -112,5 +103,68 @@
                 </button>
             </div>
         </div>
+        @section Scripts {
+            <script>
+                // ── Atributos no Edit (mesma lógica do Create) ─────────────
+                document.querySelectorAll('.stat-input').forEach(input => {
+                    input.addEventListener('input', function () {
+                        let val = parseInt(this.value);
+                        if (isNaN(val)) val = 8;
+                        if (val < 8) { this.value = 8; val = 8; }
+
+                        let mod = Math.floor((val - 10) / 2);
+                        let modText = mod >= 0 ? "+" + mod : mod.toString();
+
+                        let container = this.closest('.flex-col');
+                        if (!container) return;
+
+                        let modEl = container.querySelector('.stat-modifier');
+                        if (modEl) modEl.innerText = modText;
+
+                        let percent = Math.min(100, Math.max(0, (val * 100) / 20));
+                        let bar = container.querySelector('.stat-bar');
+                        if (bar) bar.style.width = percent + "%";
+                    });
+
+                    input.addEventListener('change', function () {
+                        let v = parseInt(this.value);
+                        if (isNaN(v) || v < 8) {
+                            this.value = 8;
+                            this.dispatchEvent(new Event('input'));
+                        }
+                    });
+                });
+
+                // inicializa os modificadores/barras com os valores atuais
+                document.querySelectorAll('.stat-input').forEach(input => {
+                    input.dispatchEvent(new Event('input'));
+                });
+
+                // ── Aviso de saída sem salvar ─────────────────────
+                (function () {
+                    const form = document.querySelector('form[asp-action="Edit"][asp-controller="Characters"]')
+                            || document.querySelector('form');
+
+                    if (!form) return;
+
+                    let isDirty = false;
+
+                    form.addEventListener('input', () => { isDirty = true; });
+                    form.addEventListener('change', () => { isDirty = true; });
+
+                    form.addEventListener('submit', () => {
+                        isDirty = false;
+                        window.onbeforeunload = null;
+                    });
+
+                    window.onbeforeunload = function (e) {
+                        if (!isDirty) return;
+
+                        e.preventDefault();
+                        e.returnValue = '';
+                        return '';
+                    };
+            </script>
+        }
     </main>
 </form>

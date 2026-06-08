@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RpgBuilderMvc")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+880ffa008391d006b00a775ec948ec2c8ad115f1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+990848c656f570070eca3f6bb6535c9efd7a283a")]
 [assembly: System.Reflection.AssemblyProductAttribute("RpgBuilderMvc")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RpgBuilderMvc")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

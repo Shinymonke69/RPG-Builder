@@ -40,37 +40,40 @@
             <!-- Left Column: Abilities & Health -->
             <div class="lg:col-span-4 flex flex-col gap-6">
                 <!-- Ability Scores -->
+                @{
+                    var stats = new[]
+                    {
+                        new { Name = "Força",        Key = "strength",     Value = Model.Character.Strength },
+                        new { Name = "Destreza",     Key = "dexterity",    Value = Model.Character.Dexterity },
+                        new { Name = "Constituição", Key = "constitution", Value = Model.Character.Constitution },
+                        new { Name = "Inteligência", Key = "intelligence", Value = Model.Character.Intelligence },
+                        new { Name = "Sabedoria",    Key = "wisdom",       Value = Model.Character.Wisdom },
+                        new { Name = "Carisma",      Key = "charisma",     Value = Model.Character.Charisma }
+                    };
+                }
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="flex flex-col items-center p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                        <span class="text-xs font-bold text-slate-500 dark:text-[#c992a0]">FORÇA</span>
-                        <span class="text-2xl font-bold">10</span>
-                        <span class="text-sm bg-slate-100 dark:bg-[#48232c] px-2 py-0.5 rounded mt-1">+0</span>
-                    </div>
-                    <div class="flex flex-col items-center p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                        <span class="text-xs font-bold text-slate-500 dark:text-[#c992a0]">DESTREZA</span>
-                        <span class="text-2xl font-bold">14</span>
-                        <span class="text-sm bg-slate-100 dark:bg-[#48232c] px-2 py-0.5 rounded mt-1">+2</span>
-                    </div>
-                    <div class="flex flex-col items-center p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                        <span class="text-xs font-bold text-slate-500 dark:text-[#c992a0]">CONSTITUIÇÃO</span>
-                        <span class="text-2xl font-bold">12</span>
-                        <span class="text-sm bg-slate-100 dark:bg-[#48232c] px-2 py-0.5 rounded mt-1">+1</span>
-                    </div>
-                    <div class="flex flex-col items-center p-4 rounded-xl border border-primary/40 bg-primary/5 dark:bg-primary/10">
-                        <span class="text-xs font-bold text-primary">INTELIGÊNCIA</span>
-                        <span class="text-2xl font-bold">18</span>
-                        <span class="text-sm bg-primary text-white px-2 py-0.5 rounded mt-1">+4</span>
-                    </div>
-                    <div class="flex flex-col items-center p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                        <span class="text-xs font-bold text-slate-500 dark:text-[#c992a0]">SABEDORIA</span>
-                        <span class="text-2xl font-bold">14</span>
-                        <span class="text-sm bg-slate-100 dark:bg-[#48232c] px-2 py-0.5 rounded mt-1">+2</span>
-                    </div>
-                    <div class="flex flex-col items-center p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                        <span class="text-xs font-bold text-slate-500 dark:text-[#c992a0]">CARISMA</span>
-                        <span class="text-2xl font-bold">8</span>
-                        <span class="text-sm bg-slate-100 dark:bg-[#48232c] px-2 py-0.5 rounded mt-1">-1</span>
-                    </div>
+                    @foreach (var stat in stats)
+                    {
+                        int val = stat.Value;
+                        int mod = (int)Math.Floor((val - 10) / 2.0);
+                        string modText = mod >= 0 ? $"+{mod}" : mod.ToString();
+                        int percent = Math.Min(100, Math.Max(0, (val * 100) / 20));
+
+                        <div class="flex flex-col p-4 rounded-xl bg-surface-dark border border-border-dark group hover:border-primary/50 transition-colors">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-muted-dark uppercase tracking-widest">@stat.Name</span>
+                                <span class="text-primary text-xs font-bold stat-modifier">@modText</span>
+                            </div>
+                            <input name="@stat.Key"
+                                class="w-full bg-transparent border-none p-0 text-3xl font-bold text-muted-dark focus:ring-0 stat-input"
+                                type="number"
+                                min="8"
+                                value="@val" />
+                            <div class="w-full h-1 bg-background-dark mt-3 rounded-full overflow-hidden">
+                                <div class="h-full bg-primary stat-bar transition-all" style="width: @(percent)%;"></div>
+                            </div>
+                        </div>
+                    }
                 </div>
 
                 <!-- Vital Stats -->

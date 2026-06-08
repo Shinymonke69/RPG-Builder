@@ -153,8 +153,12 @@ public class CharactersController(RpgDbContext db) : Controller
     int constitution,
     int intelligence,
     int wisdom,
-    int charisma
-    )
+    int charisma,
+    string? story,
+    string? personalityTraits,
+    string? ideals,
+    string? equipmentNotes
+)
     {
         var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
         var race = await db.Races.FirstOrDefaultAsync(r => r.Index == raceIndex);
@@ -194,10 +198,10 @@ public class CharactersController(RpgDbContext db) : Controller
             Wisdom = wisdom,
             Charisma = charisma,
 
-            Story = "",
-            PersonalityTraits = "",
-            Ideals = "",
-            EquipmentNotes = ""
+            Story = story ?? "",
+            PersonalityTraits = personalityTraits ?? "",
+            Ideals = ideals ?? "",
+            EquipmentNotes = equipmentNotes ?? ""
         };
 
         db.Characters.Add(character);
@@ -292,7 +296,24 @@ public class CharactersController(RpgDbContext db) : Controller
     // POST: /Characters/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, string name, int level, string status, string classIndex, string raceIndex, string backgroundIndex, string story, string personalityTraits, string ideals, string equipmentNotes)
+    public async Task<IActionResult> Edit(
+    int id,
+    string name,
+    int level,
+    string status,
+    string classIndex,
+    string raceIndex,
+    string backgroundIndex,
+    string story,
+    string personalityTraits,
+    string ideals,
+    string equipmentNotes,
+    int strength,
+    int dexterity,
+    int constitution,
+    int intelligence,
+    int wisdom,
+    int charisma)
     {
         var character = await db.Characters.FindAsync(id);
         if (character == null) return NotFound();
@@ -302,22 +323,33 @@ public class CharactersController(RpgDbContext db) : Controller
         character.Status = status ?? "Ativo";
 
         var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
-        if (cls != null) {
+        if (cls != null)
+        {
             character.ClassIndex = cls.Index;
             character.ClassName = cls.Name;
         }
 
         var race = await db.Races.FirstOrDefaultAsync(r => r.Index == raceIndex);
-        if (race != null) {
+        if (race != null)
+        {
             character.RaceIndex = race.Index;
             character.RaceName = race.Name;
         }
 
         var bg = await db.Backgrounds.FirstOrDefaultAsync(b => b.Index == backgroundIndex);
-        if (bg != null) {
+        if (bg != null)
+        {
             character.BackgroundIndex = bg.Index;
             character.BackgroundName = bg.Name;
         }
+
+        // novos: salvar atributos
+        character.Strength = strength;
+        character.Dexterity = dexterity;
+        character.Constitution = constitution;
+        character.Intelligence = intelligence;
+        character.Wisdom = wisdom;
+        character.Charisma = charisma;
 
         character.Story = story ?? "";
         character.PersonalityTraits = personalityTraits ?? "";
