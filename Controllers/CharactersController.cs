@@ -33,6 +33,16 @@ public class CharactersController(RpgDbContext db) : Controller
         var standardArray = new[] { 15, 14, 13, 12, 10, 8 };
         ViewBag.DefaultStats = standardArray.OrderBy(x => random.Next()).ToArray();
 
+        var randomClassIndex = classes.Count > 0
+            ? classes[random.Next(classes.Count)].Index
+            : "";
+        ViewBag.RandomClass = randomClassIndex;
+
+        var randomRaceIndex = races.Count > 0
+            ? races[random.Next(races.Count)].Index
+            : "";
+        ViewBag.RandomRace = randomRaceIndex;
+
         // escolhe um background aleatório para começar
         var randomBgIndex = backgrounds.Count > 0
             ? backgrounds[random.Next(backgrounds.Count)].Index

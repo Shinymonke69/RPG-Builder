@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RpgBuilderMvc.Domain.Entities.Character>
+@model IEnumerable<RpgBuilderMvc.Domain.Entities.Character>
 
 @{
     ViewData["Title"] = "Painel";
@@ -30,71 +30,114 @@
 
 
                 <div class="mt-8 rounded-2xl bg-blue-550/80 dark:bg-blue-550/70 border border-blue-550/70 shadow-xl p-6 md:p-8">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @foreach (var ch in Model)
-                        {
-                            <div class="group flex flex-col p-6 rounded-xl border border-primary/10 bg-slate-50 dark:bg-primary/5 hover:border-primary/40 transition-all">
-                                <div class="flex justify-between items-start mb-4">
-                                    <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                        <span class="material-symbols-outlined text-3xl">auto_fix_high</span>
-                                    </div>
-                                </div>
-                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 font-display mb-1">
-                                    @ch.Name
-                                </h3>
-                                <div class="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-sm mb-6">
-                                    <div class="flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-sm">person</span>
-                                        <span>@ch.RaceName • @ch.ClassName</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-sm">military_tech</span>
-                                        <span class="font-bold text-primary">Nível @ch.Level</span>
-                                    </div>
-                                </div>
-                                <div class="mt-auto flex gap-2">
-                                    <a asp-controller="Characters"
-                                       asp-action="Edit"
-                                       asp-route-id="@ch.Id"
-                                       class="flex-1 py-2.5 rounded-lg bg-primary/10 text-primary text-sm font-bold hover:bg-primary hover:text-white transition-all text-center">
-                                        Ver ficha do personagem
-                                    </a>
-                                    <form asp-controller="Characters"
-                                          asp-action="Delete"
-                                          asp-route-id="@ch.Id"
-                                          method="post"
-                                          class="flex items-stretch">
-                                        <button type="submit"
-                                                title="Excluir"
-                                                onclick="return confirm('Tem certeza que deseja excluir @ch.Name?');"
-                                                class="px-3 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-[20px]">delete</span>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        }
-                    </div>
-
-                    @if (totalPages > 1)
+                    @if (!Model.Any())
                     {
-                        <div class="mt-6 flex justify-center gap-2">
-                            @if (currentPage > 1)
+                        <div class="flex flex-col items-center justify-center py-16 text-center">
+                            <div class="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-primary mb-6">
+                                <span class="material-symbols-outlined text-4xl">travel_explore</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-900 dark:text-slate-100 font-display mb-2">
+                                Nenhum personagem encontrado
+                            </h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-lg max-w-md mb-8">
+                                Você ainda não possui nenhum personagem. Que tal criar o seu primeiro e começar sua jornada?
+                            </p>
+                            <a asp-controller="Characters"
+                               asp-action="Create"
+                               class="flex items-center justify-center gap-2 rounded-lg h-12 px-8 bg-primary text-white text-base font-bold tracking-wide hover:brightness-110 transition-all shadow-lg shadow-primary/20">
+                                <span class="material-symbols-outlined">add</span>
+                                <span>Criar meu primeiro personagem</span>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            @foreach (var ch in Model)
                             {
-                                <a asp-action="Index"
-                                   asp-route-page="@(currentPage - 1)"
-                                   class="px-3 py-2 rounded-lg border border-border-dark text-sm text-muted-dark hover:bg-surface-dark">
-                                    Anterior
-                                </a>
+                                <div class="group flex flex-col p-6 rounded-xl border border-primary/10 bg-slate-50 dark:bg-primary/5 hover:border-primary/40 transition-all">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                            <span class="material-symbols-outlined text-3xl">auto_fix_high</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 font-display mb-1">
+                                        @ch.Name
+                                    </h3>
+                                    <div class="flex flex-col gap-1 text-slate-500 dark:text-slate-400 text-sm mb-6">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">person</span>
+                                            <span>@ch.RaceName • @ch.ClassName</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">military_tech</span>
+                                            <span class="font-bold text-primary">Nível @ch.Level</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-auto flex gap-2">
+                                        <a asp-controller="Characters"
+                                           asp-action="Edit"
+                                           asp-route-id="@ch.Id"
+                                           class="flex-1 py-2.5 rounded-lg bg-primary/10 text-primary text-sm font-bold hover:bg-primary hover:text-white transition-all text-center">
+                                            Ver ficha do personagem
+                                        </a>
+                                        <form asp-controller="Characters"
+                                              asp-action="Delete"
+                                              asp-route-id="@ch.Id"
+                                              method="post"
+                                              class="flex items-stretch">
+                                            <button type="submit"
+                                                    title="Excluir"
+                                                    onclick="return confirm('Tem certeza que deseja excluir @ch.Name?');"
+                                                    class="px-3 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-[20px]">delete</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
                             }
+                        </div>
 
-                            @for (var p = 1; p <= totalPages; p++)
-                            {
-                                <a asp-action="Index"
-                                   asp-route-page="@p"
-                                   class="px-3 py-2 rounded-lg text-sm @(p == currentPage ? "bg-primary text-white" : "border border-border-dark text-muted-dark hover:bg-surface-dark")">
-                                    @p
-                                </a>
+                        @if (totalPages > 1)
+                        {
+                            <div class="mt-6 flex flex-wrap justify-center gap-2">
+                                @if (currentPage > 1)
+                                {
+                                    <a asp-action="Index"
+                                       asp-route-page="@(currentPage - 1)"
+                                       class="px-3 py-2 rounded-lg border border-border-dark text-sm text-muted-dark hover:bg-surface-dark">
+                                        Anterior
+                                    </a>
+                                }
+
+                                @{
+                                    int startPage = Math.Max(1, currentPage - 2);
+                                    int endPage = Math.Min(totalPages, currentPage + 2);
+                                    
+                                    if (startPage > 1) {
+                                        <a asp-action="Index" asp-route-page="1" class="px-3 py-2 rounded-lg border border-border-dark text-sm text-muted-dark hover:bg-surface-dark">1</a>
+                                        if (startPage > 2) {
+                                            <span class="px-3 py-2 text-sm text-muted-dark">...</span>
+                                        }
+                                    }
+                                }
+
+                                @for (var p = startPage; p <= endPage; p++)
+                                {
+                                    <a asp-action="Index"
+                                       asp-route-page="@p"
+                                       class="px-3 py-2 rounded-lg text-sm @(p == currentPage ? "bg-primary text-white" : "border border-border-dark text-muted-dark hover:bg-surface-dark")">
+                                        @p
+                                    </a>
+                                }
+
+                            @{
+                                if (endPage < totalPages) {
+                                    if (endPage < totalPages - 1) {
+                                        <span class="px-3 py-2 text-sm text-muted-dark">...</span>
+                                    }
+                                    <a asp-action="Index" asp-route-page="@totalPages" class="px-3 py-2 rounded-lg border border-border-dark text-sm text-muted-dark hover:bg-surface-dark">@totalPages</a>
+                                }
                             }
 
                             @if (currentPage < totalPages)
@@ -106,6 +149,7 @@
                                 </a>
                             }
                         </div>
+                    }
                     }
                 </div>
             </div>

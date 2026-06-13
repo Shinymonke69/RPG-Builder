@@ -45,19 +45,23 @@
                                 <label class="block text-sm font-medium text-muted-dark mb-1 ml-1">Classe</label>
                                 <select name="classIndex"
                                         class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none">
+                                    @{
+                                        var defaultClass = randomCharacter != null ? randomCharacter.ClassIndex : (string)ViewBag.RandomClass;
+                                    }
                                     @foreach (var c in classes)
                                     {
-                                        var selected = randomCharacter != null && c.Index == randomCharacter.ClassIndex;
-                                        <option value="@c.Index" selected="@(selected)">@c.Name</option>
+                                        <option value="@c.Index" selected="@(c.Index == defaultClass)">@c.Name</option>
                                     }
                                 </select>
 
                                 <label class="block text-sm font-medium text-muted-dark mb-1 ml-1 mt-4">Raça</label>
                                 <select name="raceIndex" class="w-full bg-background border border-border-dark rounded-lg px-4 py-3 text-slate focus:ring-2 focus:ring-primary focus:outline-none">
+                                    @{
+                                        var defaultRace = randomCharacter != null ? randomCharacter.RaceIndex : (string)ViewBag.RandomRace;
+                                    }
                                     @foreach (var r in races)
                                     {
-                                        var selected = randomCharacter != null && r.Index == randomCharacter.RaceIndex;
-                                        <option value="@r.Index" selected="@(selected)">@r.Name</option>
+                                        <option value="@r.Index" selected="@(r.Index == defaultRace)">@r.Name</option>
                                     }
                                 </select>
 
