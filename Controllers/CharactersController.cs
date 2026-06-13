@@ -307,6 +307,16 @@ public class CharactersController(RpgDbContext db) : Controller
             CharacterSpells = await db.CharacterSpells
                 .Include(cs => cs.Spell)
                 .Where(cs => cs.CharacterId == id)
+                .ToListAsync(),
+            AllWeapons = await db.Weapons.OrderBy(w => w.Name).ToListAsync(),
+            CharacterWeapons = await db.CharacterWeapons
+                .Include(cw => cw.Weapon)
+                .Where(cw => cw.CharacterId == id)
+                .ToListAsync(),
+            AllArmors = await db.Armors.OrderBy(a => a.Name).ToListAsync(),
+            CharacterArmors = await db.CharacterArmors
+                .Include(ca => ca.Armor)
+                .Where(ca => ca.CharacterId == id)
                 .ToListAsync()
         };
 
@@ -339,7 +349,9 @@ public class CharactersController(RpgDbContext db) : Controller
     int wisdom,
     int charisma,
     int[] proficientSkills,
-    int[]? selectedSpells)
+    int[]? selectedSpells,
+    int[]? selectedWeapons,
+    int[]? selectedArmors)
     {
         var character = await db.Characters.FindAsync(id);
         if (character == null) return NotFound();
@@ -407,20 +419,6 @@ public class CharactersController(RpgDbContext db) : Controller
             }
         }
 
-        if (proficientSkills != null)
-        {
-            foreach (var skillId in proficientSkills)
-            {
-                db.CharacterSkills.Add(new CharacterSkill
-                {
-                    CharacterId = id,
-                    SkillId = skillId,
-                    IsProficient = true,
-                    Bonus = 0 
-                });
-            }
-        }
-
         if (selectedSpells != null)
         {
             foreach (var spellId in selectedSpells)
@@ -431,6 +429,38 @@ public class CharactersController(RpgDbContext db) : Controller
                     SpellId = spellId,
                     IsPrepared = false,
                     SlotLevel = 0
+                });
+            }
+        }
+
+        var existingWeapons = await db.CharacterWeapons.Where(cw => cw.CharacterId == id).ToListAsync();
+        db.CharacterWeapons.RemoveRange(existingWeapons);
+
+        if (selectedWeapons != null)
+        {
+            foreach (var weaponId in selectedWeapons)
+            {
+                db.CharacterWeapons.Add(new CharacterWeapon
+                {
+                    CharacterId = id,
+                    WeaponId = weaponId,
+                    IsEquipped = true
+                });
+            }
+        }
+
+        var existingArmors = await db.CharacterArmors.Where(ca => ca.CharacterId == id).ToListAsync();
+        db.CharacterArmors.RemoveRange(existingArmors);
+
+        if (selectedArmors != null)
+        {
+            foreach (var armorId in selectedArmors)
+            {
+                db.CharacterArmors.Add(new CharacterArmor
+                {
+                    CharacterId = id,
+                    ArmorId = armorId,
+                    IsEquipped = true
                 });
             }
         }

@@ -279,89 +279,58 @@ if (app.Environment.IsDevelopment())
     // ── StartingEquipment por classe ─────────────────────────
     var barbarianEquip = new[]
     {
-        "Arma marcial pesada",
-        "Arma simples corpo a corpo",
-        "Pacote de explorador",
-        "Arma simples de arremesso"
+        "Pacote de explorador"
     };
     var bardEquip = new[]
     {
-        "Arma simples corpo a corpo",
         "Pacote de diplomata ou de artista",
-        "Um instrumento musical à escolha",
-        "Armadura leve"
+        "Um instrumento musical à escolha"
     };
     var clericEquip = new[]
     {
-        "Arma simples corpo a corpo",
-        "Armadura média",
-        "Arma simples à distância",
         "Pacote de sacerdote",
-        "Escudo",
         "Símbolo sagrado"
     };
     var druidEquip = new[]
     {
-        "Escudo de madeira",
-        "Arma simples corpo a corpo",
         "Pacote de explorador",
         "Foco druídico"
     };
     var fighterEquip = new[]
     {
-        "Armadura pesada",
-        "Arma marcial e escudo",
-        "Arma simples à distância",
         "Pacote de explorador"
     };
     var monkEquip = new[]
     {
-        "Arma simples corpo a corpo",
         "Pacote de explorador",
-        "Arma simples de arremesso",
         "Roupas de monge"
     };
     var paladinEquip = new[]
     {
-        "Arma marcial e escudo",
-        "Armadura pesada",
-        "Arma simples à distância",
         "Pacote de sacerdote",
         "Símbolo sagrado"
     };
     var rangerEquip = new[]
     {
-        "Armadura leve",
-        "Duas armas simples corpo a corpo",
-        "Pacote de explorador",
-        "Arma à distância"
+        "Pacote de explorador"
     };
     var rogueEquip = new[]
     {
-        "Arma simples à distância",
-        "Arma corpo a corpo leve",
         "Pacote de ladrão",
-        "Armadura leve",
         "Kit de ladrão"
     };
     var sorcererEquip = new[]
     {
-        "Bordão",
         "Foco arcano",
-        "Pacote de explorador",
-        "Duas armas leves"
+        "Pacote de explorador"
     };
     var warlockEquip = new[]
     {
-        "Arma simples corpo a corpo",
         "Foco arcano",
-        "Pacote de estudioso",
-        "Armadura leve",
-        "Arma simples à distância"
+        "Pacote de estudioso"
     };
     var wizardEquip = new[]
     {
-        "Bordão",
         "Bolsa de componentes",
         "Pacote de estudioso",
         "Livro de magias"

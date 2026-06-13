@@ -19,5 +19,11 @@ namespace RpgBuilderMvc.Application.ViewModels
         // Spells
         public List<Spell> AllSpells { get; set; } = [];
         public List<CharacterSpell> CharacterSpells { get; set; } = [];
+
+        // Equipment
+        public List<Weapon> AllWeapons { get; set; } = [];
+        public List<CharacterWeapon> CharacterWeapons { get; set; } = [];
+        public List<Armor> AllArmors { get; set; } = [];
+        public List<CharacterArmor> CharacterArmors { get; set; } = [];
     }
 }
