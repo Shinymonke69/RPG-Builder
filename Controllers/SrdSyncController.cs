@@ -3,12 +3,13 @@ using RpgBuilderMvc.Infrastructure.Sync;
 
 namespace RpgBuilderMvc.Controllers;
 
-public class SrdSyncController(SrdImporter importer) : Controller
+public class SrdSyncController(SrdImporter importer, EquipmentImporter equipmentImporter) : Controller
 {
     // GET: /SrdSync/Run
     public async Task<IActionResult> Run()
     {
         await importer.ImportAllAsync();
-        return Content("SRD import finished (classes, races, traits, spells).");
+        await equipmentImporter.ImportAsync();
+        return Content("SRD import finished (classes, races, traits, spells, equipment).");
     }
 }

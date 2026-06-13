@@ -10,7 +10,7 @@
     var backgrounds = ViewBag.Backgrounds as List<RpgBuilderMvc.Domain.Entities.Background> ?? new();
 }
 
-<form asp-action="Edit" asp-controller="Characters" method="post">
+<form id="edit-character-form" asp-action="Edit" asp-controller="Characters" method="post">
     <input type="hidden" name="id" value="@Model.Character.Id" />
     <main class="flex-1 px-4 lg:px-40 py-8">
         <div class="layout-content-container flex flex-col max-w-[1024px] mx-auto gap-8">
@@ -407,8 +407,7 @@
 
                 // ── Aviso de saída sem salvar ─────────────────────
                 (function () {
-                    const form = document.querySelector('form[asp-action="Edit"][asp-controller="Characters"]')
-                            || document.querySelector('form');
+                    const form = document.getElementById('edit-character-form');
 
                     if (!form) return;
 
