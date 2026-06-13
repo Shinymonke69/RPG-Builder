@@ -1,0 +1,91 @@
+@model RpgBuilderMvc.Application.ViewModels.CharacterEditViewModel
+
+<div class="layout-content-container flex flex-col max-w-[1024px] mx-auto gap-8">
+    <div id="tab-magias">
+        <div class="p-6 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
+            <h3 class="text-3xl font-bold mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-3xl">auto_stories</span>
+                Livro de magias
+            </h3>
+            <div class="space-y-4">
+
+                @{
+                    var spellsByLevel = new Dictionary<int, List<RpgBuilderMvc.Domain.Entities.Spell>>();
+                    for (int lvl = 0; lvl <= 9; lvl++)
+                    {
+                        spellsByLevel[lvl] = Model.AllSpells?.Where(s => s.Level == lvl).OrderBy(s => s.Name).ToList() ?? new List<RpgBuilderMvc.Domain.Entities.Spell>();
+                    }
+                }
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 mb-4">
+                    @for (int col = 0; col <= 9; col++)
+                    {
+                        <div class="p-4 rounded-xl border border-border-dark bg-surface-dark">
+                            <div class="flex items-center justify-between mb-4 border-b border-border-dark/50 pb-3">
+                                @if (col == 0)
+                                {
+                                    <span class="text-3xl font-black font-display text-primary drop-shadow-sm uppercase">Truques</span>
+                                }
+                                else
+                                {
+                                    <span class="text-4xl font-black font-display text-primary/80 drop-shadow-sm">LvL @col</span>   
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex flex-col items-center">
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total</label>
+                                            <input type="number" name="@($"allowed_L{col}")" min="0" max="100" value="0" class="w-14 h-8 bg-background border border-border-dark rounded-md px-1 text-center font-bold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-primary focus:outline-none level-allowed" data-level="@col" />
+                                        </div>
+                                        <span class="text-slate-300 dark:text-slate-600 font-light text-2xl">/</span>
+                                        <div class="flex flex-col items-center">
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Usados</label>
+                                            <input type="number" name="@($"used_L{col}")" min="0" max="100" value="0" class="w-14 h-8 bg-background border border-border-dark rounded-md px-1 text-center font-bold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-primary focus:outline-none level-used" data-level="@col" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="space-y-1 max-h-64 overflow-auto">
+                                @foreach (var s in spellsByLevel[col])
+                                {
+                                    var isSelected = Model.CharacterSpells.Any(cs => cs.SpellId == s.Id);
+                                    <label class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c] cursor-pointer group">
+                                        <div class="flex items-center gap-2">
+                                            <input type="checkbox" name="selectedSpells" value="@s.Id" class="spell-checkbox peer hidden" @(isSelected ? "checked" : "") />
+                                            <span class="material-symbols-outlined text-[16px] text-primary hidden peer-checked:block" style="font-variation-settings: 'FILL' 1">check_circle</span>
+                                            <span class="material-symbols-outlined text-[16px] text-slate-400 block peer-checked:hidden">circle</span>
+                                            <span class="text-sm font-medium peer-checked:font-bold peer-checked:text-primary">@s.Name</span>
+                                            <span class="text-[10px] text-slate-400 uppercase">(@s.School)</span>
+                                        </div>
+                                        <span class="text-sm font-bold text-slate-500 peer-checked:text-primary"></span>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Valida e limita os campos de disponíveis/usadas por nível
+    document.querySelectorAll('.level-allowed, .level-used').forEach(input => {
+        input.addEventListener('input', function () {
+            let v = parseInt(this.value);
+            if (isNaN(v) || v < 0) { v = 0; }
+            if (v > 100) { v = 100; }
+            this.value = v;
+
+            // se for usado > disponível, ajusta
+            const lvl = this.getAttribute('data-level');
+            if (!lvl) return;
+            const allowed = document.querySelector('.level-allowed[data-level="' + lvl + '"]');
+            const used = document.querySelector('.level-used[data-level="' + lvl + '"]');
+            if (allowed && used) {
+                let av = parseInt(allowed.value) || 0;
+                let uv = parseInt(used.value) || 0;
+                if (uv > av) { used.value = av; }
+            }
+        });
+    });
+</script>

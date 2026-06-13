@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html class="dark" lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,32 +11,108 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
     <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#d41142",
-                        "background-light": "#f8f6f6",
-                        "background-dark": "#221015",
-                        "surface-dark": "#331920",
-                        "border-dark": "#67323f",
-                        "muted-dark": "#c992a0"
-                    },
-                    fontFamily: {
-                        display: ["Newsreader", "serif"]
-                    },
-                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" }
-                }
-            }
-        }
-    </script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#4052D6",
+                    "background-light": "#f8f6f6",
+                    "background-dark": "#221016",
+                },
+                fontFamily: {
+                    "display": ["Work Sans", "sans-serif"]
+                },
+                borderRadius: {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+                },
+            },
+        },
+    }
+</script>
 
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
-    @RenderBody()
-    @RenderSection("Scripts", required: false)
+    <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+
+            @{
+                var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+                var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+                bool isHome = currentController == "Home" && currentAction == "Index";
+            }
+
+            <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-10 py-4 bg-background-light dark:bg-background-dark">
+                <div class="flex items-center gap-4 text-primary">
+                    <a asp-controller="Home"
+                        asp-action="Index"
+                        class="flex items-center gap-3 hover:opacity-90 transition-opacity">
+                        <div class="size-8 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-3xl">swords</span>
+                        </div>
+                        <h2 class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight font-display">
+                            RPG-Builder
+                        </h2>
+                    </a>
+                </div>
+
+                <div class="flex flex-1 justify-end gap-4 md:gap-8 items-center">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white/5 p-2 rounded-lg transition-colors cursor-pointer">
+                                <div class="flex items-center justify-center rounded-full h-10 w-10 bg-primary/10 text-primary">
+                                    <span class="material-symbols-outlined">account_circle</span>
+                                </div>
+                                <span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">expand_more</span>
+                            </button>
+
+                            <div class="absolute right-0 top-full mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100 z-50">
+                                <div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden p-2 flex flex-col gap-1">
+                                    <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-1">
+                                        <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Aventureiro</p>
+                                        <p class="text-sm font-bold text-slate-900 dark:text-white truncate">@User.Identity.Name</p>
+                                    </div>
+                                    <form asp-controller="Auth" asp-action="Logout" method="post" class="m-0">
+                                        <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-sm font-bold text-left">
+                                            <span class="material-symbols-outlined text-[20px]">logout</span>
+                                            Sair da Guilda
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex items-center gap-2">
+                            <a asp-controller="Auth" asp-action="Login" class="flex items-center justify-center rounded-lg h-10 px-4 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                                Entrar
+                            </a>
+                            <a asp-controller="Auth" asp-action="Register" class="flex items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold shadow-md hover:bg-primary/90 transition-colors">
+                                Criar Conta
+                            </a>
+                        </div>
+                    }
+                </div>
+            </header>
+
+            @RenderBody()
+
+            <footer class="mt-20 py-8 px-6 md:px-20 border-t border-border bg-background">
+                <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-muted-dark text-sm">© 2024 RPG-Builder. Todos os direitos reservados.</p>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
