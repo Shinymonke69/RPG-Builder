@@ -25,7 +25,7 @@ public class HomeController(RpgDbContext db) : Controller
 
         var totalCount = await db.Characters.CountAsync();
         var characters = await db.Characters
-            .OrderBy(c => c.Name)
+            .OrderByDescending(c => c.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

@@ -5,6 +5,8 @@ public class Character
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public int Level { get; set; }
+    public int Xp { get; set; }
+    public int CurrentHp { get; set; }
     public string Status { get; set; } = "Ativo";
 
     public string ClassIndex { get; set; } = null!;
@@ -25,5 +27,7 @@ public class Character
     public string? Story { get; set; }
     public string? PersonalityTraits { get; set; }
     public string? Ideals { get; set; }
+    public string? Bonds { get; set; }
+    public string? Flaws { get; set; }
     public string? EquipmentNotes { get; set; }
 }

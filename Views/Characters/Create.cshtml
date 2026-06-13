@@ -108,6 +108,7 @@
                                         class="w-full bg-transparent border-none p-0 text-3xl font-bold text-muted-dark focus:ring-0 stat-input"
                                         type="number"
                                         min="8"
+                                        max="20"
                                         value="@val" />
                                     <div class="w-full h-1 bg-background-dark mt-3 rounded-full overflow-hidden">
                                         <div class="h-full bg-primary stat-bar transition-all" style="width: @(percent)%;"></div>
@@ -119,22 +120,37 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
-                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">history_edu</span>
-                            Traços &amp; habilidades
-                        </h3>
-                        <div class="space-y-3" id="traits-container">
-                            <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
-                                <div id="background-traits" class="text-sm whitespace-pre-line leading-relaxed"></div>
+                            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">history_edu</span>
+                                Personalidade &amp; História
+                            </h3>
+                            <div class="space-y-4" id="traits-container">
+                                <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
+                                    <span class="text-[10px] font-bold text-primary uppercase">Traços de Personalidade</span>
+                                    <textarea name="personalityTraits" id="bg-personality" rows="3" class="w-full bg-transparent border-none p-0 text-sm whitespace-pre-wrap leading-relaxed focus:ring-0 resize-y"></textarea>
+                                </div>
+                                <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
+                                    <span class="text-[10px] font-bold text-primary uppercase">Ideais</span>
+                                    <textarea name="ideals" id="bg-ideals" rows="2" class="w-full bg-transparent border-none p-0 text-sm whitespace-pre-wrap leading-relaxed focus:ring-0 resize-y"></textarea>
+                                </div>
+                                <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
+                                    <span class="text-[10px] font-bold text-primary uppercase">Laços</span>
+                                    <textarea name="bonds" id="bg-bonds" rows="2" class="w-full bg-transparent border-none p-0 text-sm whitespace-pre-wrap leading-relaxed focus:ring-0 resize-y"></textarea>
+                                </div>
+                                <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
+                                    <span class="text-[10px] font-bold text-primary uppercase">Defeitos</span>
+                                    <textarea name="flaws" id="bg-flaws" rows="2" class="w-full bg-transparent border-none p-0 text-sm whitespace-pre-wrap leading-relaxed focus:ring-0 resize-y"></textarea>
+                                </div>
                             </div>
                         </div>
-                    </div>
                         <div>
                             <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
                                 <span class="material-symbols-outlined text-primary">inventory_2</span>
                                 Equipamento inicial
                             </h3>
-                            <ul id="equipment-list" class="space-y-2"></ul>
+                            <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
+                                <textarea name="equipmentNotes" id="equipment-list" rows="10" class="w-full bg-transparent border-none p-0 text-sm whitespace-pre-wrap leading-relaxed focus:ring-0 resize-y"></textarea>
+                            </div>
                         </div>
                     </div>
 
@@ -160,6 +176,7 @@
                 let val = parseInt(this.value);
                 if (isNaN(val)) val = 8;
                 if (val < 8) { this.value = 8; val = 8; }
+                if (val > 20) { this.value = 20; val = 20; }
 
                 let mod = Math.floor((val - 10) / 2);
                 let modText = mod >= 0 ? "+" + mod : mod.toString();
@@ -175,27 +192,16 @@
                 if (parseInt(this.value) < 8 || isNaN(parseInt(this.value))) {
                     this.value = 8;
                     this.dispatchEvent(new Event('input'));
+                } else if (parseInt(this.value) > 20) {
+                    this.value = 20;
+                    this.dispatchEvent(new Event('input'));
                 }
             });
         });
 
         // ── Traços do antecedente ────
         @{
-            var bgDict = new Dictionary<string, string>();
-            foreach (var b in backgrounds)
-            {
-                var parts = new List<string>();
-                if (!string.IsNullOrWhiteSpace(b.Feature))           parts.Add("Característica: " + b.Feature);
-                if (!string.IsNullOrWhiteSpace(b.Skills))            parts.Add("Perícias: " + b.Skills);
-                if (!string.IsNullOrWhiteSpace(b.Languages))         parts.Add("Idiomas: " + b.Languages);
-                if (!string.IsNullOrWhiteSpace(b.Tools))             parts.Add("Ferramentas: " + b.Tools);
-                if (!string.IsNullOrWhiteSpace(b.PersonalityTraits)) parts.Add("Traços de personalidade: " + b.PersonalityTraits);
-                if (!string.IsNullOrWhiteSpace(b.Ideals))            parts.Add("Ideais: " + b.Ideals);
-                if (!string.IsNullOrWhiteSpace(b.Bonds))             parts.Add("Laços: " + b.Bonds);
-                if (!string.IsNullOrWhiteSpace(b.Flaws))             parts.Add("Defeitos: " + b.Flaws);
-                bgDict[b.Index] = string.Join("\n", parts);
-            }
-            var bgJson = System.Text.Json.JsonSerializer.Serialize(bgDict);
+            var bgJson = System.Text.Json.JsonSerializer.Serialize(backgrounds);
         }
         const backgroundsData = @Html.Raw(bgJson);
 
@@ -211,18 +217,20 @@
         const classEquipmentData = @Html.Raw(classEquipJson);
 
         function updateTraits(index) {
-            const el = document.getElementById('background-traits');
-            const text = backgroundsData[index] || '';
-            if (!text) { el.innerHTML = ''; return; }
-            el.innerHTML = text.split('\n').map(line => {
-                const colonIdx = line.indexOf(':');
-                if (colonIdx > 0) {
-                    const label = line.substring(0, colonIdx + 1);
-                    const value = line.substring(colonIdx + 1);
-                    return '<strong>' + label + '</strong>' + value;
-                }
-                return line;
-            }).join('<br>');
+            const bg = backgroundsData.find(b => b.Index === index);
+            if (bg) {
+                const elPers = document.getElementById('bg-personality');
+                if (elPers) elPers.value = bg.PersonalityTraits || '';
+
+                const elIdeals = document.getElementById('bg-ideals');
+                if (elIdeals) elIdeals.value = bg.Ideals || '';
+
+                const elBonds = document.getElementById('bg-bonds');
+                if (elBonds) elBonds.value = bg.Bonds || '';
+
+                const elFlaws = document.getElementById('bg-flaws');
+                if (elFlaws) elFlaws.value = bg.Flaws || '';
+            }
         }
 
         const bgSelect = document.getElementById('backgroundSelect');
@@ -249,22 +257,11 @@
             if (!listEl) return;
 
             if (!data) {
-                listEl.innerHTML = `
-                    <li class="flex items-center justify-between p-2 border-b border-border-dark/30">
-                        <span class="text-sm text-muted-dark">Nenhum equipamento inicial configurado para esta classe.</span>
-                        <span class="text-xs text-muted-dark"></span>
-                    </li>`;
+                listEl.value = "Nenhum equipamento inicial configurado para esta classe.";
                 return;
             }
 
-            const lines = data.split("\n").filter(l => l.trim().length > 0);
-
-            listEl.innerHTML = lines.map(line => `
-                <li class="flex items-center justify-between p-2 border-b border-border-dark/30">
-                    <span class="text-sm">${line}</span>
-                    <span class="text-xs text-muted-dark"></span>
-                </li>
-            `).join("");
+            listEl.value = data;
         }
     </script>
 }

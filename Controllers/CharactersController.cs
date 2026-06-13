@@ -157,7 +157,11 @@ public class CharactersController(RpgDbContext db) : Controller
     string? story,
     string? personalityTraits,
     string? ideals,
-    string? equipmentNotes
+    string? bonds,
+    string? flaws,
+    string? equipmentNotes,
+    int xp = 0,
+    int currentHp = 0
 )
     {
         var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
@@ -181,7 +185,9 @@ public class CharactersController(RpgDbContext db) : Controller
         var character = new Character
         {
             Name = name,
-            Level = level,
+            Level = level == 0 ? 1 : level,
+            Xp = xp,
+            CurrentHp = currentHp,
             Status = "Ativo",
 
             ClassIndex = cls.Index,
@@ -201,6 +207,8 @@ public class CharactersController(RpgDbContext db) : Controller
             Story = story ?? "",
             PersonalityTraits = personalityTraits ?? "",
             Ideals = ideals ?? "",
+            Bonds = bonds ?? "",
+            Flaws = flaws ?? "",
             EquipmentNotes = equipmentNotes ?? ""
         };
 
@@ -249,6 +257,8 @@ public class CharactersController(RpgDbContext db) : Controller
             Story = "",
             PersonalityTraits = "",
             Ideals = "",
+            Bonds = "",
+            Flaws = "",
             EquipmentNotes = ""
         };
 
@@ -307,19 +317,26 @@ public class CharactersController(RpgDbContext db) : Controller
     string story,
     string personalityTraits,
     string ideals,
+    string bonds,
+    string flaws,
     string equipmentNotes,
+    int xp,
+    int currentHp,
     int strength,
     int dexterity,
     int constitution,
     int intelligence,
     int wisdom,
-    int charisma)
+    int charisma,
+    int[] proficientSkills)
     {
         var character = await db.Characters.FindAsync(id);
         if (character == null) return NotFound();
 
         character.Name = name;
         character.Level = level;
+        character.Xp = xp;
+        character.CurrentHp = currentHp;
         character.Status = status ?? "Ativo";
 
         var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
@@ -354,7 +371,26 @@ public class CharactersController(RpgDbContext db) : Controller
         character.Story = story ?? "";
         character.PersonalityTraits = personalityTraits ?? "";
         character.Ideals = ideals ?? "";
+        character.Bonds = bonds ?? "";
+        character.Flaws = flaws ?? "";
         character.EquipmentNotes = equipmentNotes ?? "";
+
+        var existingSkills = await db.CharacterSkills.Where(cs => cs.CharacterId == id).ToListAsync();
+        db.CharacterSkills.RemoveRange(existingSkills);
+
+        if (proficientSkills != null)
+        {
+            foreach (var skillId in proficientSkills)
+            {
+                db.CharacterSkills.Add(new CharacterSkill
+                {
+                    CharacterId = id,
+                    SkillId = skillId,
+                    IsProficient = true,
+                    Bonus = 0 
+                });
+            }
+        }
 
         await db.SaveChangesAsync();
 

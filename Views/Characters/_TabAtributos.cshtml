@@ -68,6 +68,7 @@
                                 class="w-full bg-transparent border-none p-0 text-3xl font-bold text-muted-dark focus:ring-0 stat-input"
                                 type="number"
                                 min="8"
+                                max="20"
                                 value="@val" />
                             <div class="w-full h-1 bg-background-dark mt-3 rounded-full overflow-hidden">
                                 <div class="h-full bg-primary stat-bar transition-all" style="width: @(percent)%;"></div>
@@ -82,14 +83,14 @@
                         <div class="flex flex-col">
                             <span class="text-xs font-bold text-primary">PONTOS DE VIDA</span>
                             <div class="flex items-baseline gap-1">
-                                <input class="bg-transparent border-none text-3xl font-bold p-0 w-12 focus:ring-0" type="text" value="28"/>
-                                <span class="text-slate-400">/ 36</span>
+                                <input id="current-hp-input" name="currentHp" class="bg-transparent border-none text-3xl font-bold p-0 w-16 focus:ring-0" type="number" min="0" value="@Model.Character.CurrentHp"/>
+                                <span id="max-hp-display" class="text-slate-400">/ 0</span>
                             </div>
                         </div>
-                        <span class="material-symbols-outlined text-primary text-4xl">favorite</span>
+                        <span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1">favorite</span>
                     </div>
                     <div class="h-3 w-full bg-slate-200 dark:bg-[#48232c] rounded-full overflow-hidden">
-                        <div class="h-full bg-primary" style="width: 77%;"></div>
+                        <div id="hp-bar" class="h-full bg-primary transition-all" style="width: 100%;"></div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 mt-2">
                         <div class="flex flex-col">
@@ -98,7 +99,7 @@
                         </div>
                         <div class="flex flex-col">
                             <span class="text-[10px] font-bold text-slate-500 dark:text-[#c992a0] uppercase">Dados de vida</span>
-                            <div class="text-sm font-bold">5d6</div>
+                            <div id="hit-dice-display" class="text-sm font-bold">1d8</div>
                         </div>
                     </div>
                 </div>
@@ -113,25 +114,23 @@
                         Perícias &amp; proficiências
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
-                        @foreach (var cs in Model.CharacterSkills.OrderBy(cs => cs.Skill.Name))
+                        @foreach (var skill in Model.AllSkills.OrderBy(s => s.Name))
                         {
-                            <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c]">
+                            var cs = Model.CharacterSkills.FirstOrDefault(x => x.SkillId == skill.Id);
+                            bool isProficient = cs?.IsProficient ?? false;
+                            
+                            <label class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-[#48232c] cursor-pointer group">
                                 <div class="flex items-center gap-2">
-                                    @if (cs.IsProficient || cs.IsExpert)
-                                    {
-                                        <span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1">check_circle</span>
-                                        <span class="text-sm font-bold">@cs.Skill.Name</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="material-symbols-outlined text-[16px] text-primary">circle</span>
-                                        <span class="text-sm">@cs.Skill.Name</span>
-                                    }
+                                    <input type="checkbox" name="proficientSkills" value="@skill.Id" class="skill-checkbox peer hidden" @(isProficient ? "checked" : "") data-ability="@skill.Ability" />
+                                    <span class="material-symbols-outlined text-[16px] text-primary hidden peer-checked:block" style="font-variation-settings: 'FILL' 1">check_circle</span>
+                                    <span class="material-symbols-outlined text-[16px] text-slate-400 block peer-checked:hidden">circle</span>
+                                    <span class="text-sm font-medium peer-checked:font-bold peer-checked:text-primary">@skill.Name</span>
+                                    <span class="text-[10px] text-slate-400 uppercase">(@skill.Ability)</span>
                                 </div>
-                                <span class="text-sm font-bold @(cs.IsProficient || cs.IsExpert ? "text-primary" : "")">
-                                    @(cs.Bonus >= 0 ? "+" + cs.Bonus : cs.Bonus.ToString())
+                                <span class="text-sm font-bold text-slate-500 peer-checked:text-primary skill-bonus" data-ability="@skill.Ability">
+                                    +0
                                 </span>
-                            </div>
+                            </label>
                         }
                     </div>
                 </div>
@@ -144,14 +143,14 @@
                             História
                         </h3>
                         <textarea name="story"
-                            class="w-full bg-transparent border-none p-0 text-sm leading-relaxed resize-none focus:ring-0 custom-scrollbar h-32"
+                            class="w-full bg-transparent border-none p-0 text-sm leading-relaxed resize-none focus:ring-0 custom-scrollbar h-[500px] overflow-auto"
                             placeholder="Escreva aqui a história de origem do seu personagem...">@Model.Character.Story</textarea>
                     </div>
                     <div class="flex flex-col gap-4">
                         <div class="p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
                             <span class="text-[10px] font-bold text-primary uppercase">Traços de personalidade</span>
                             <textarea name="personalityTraits"
-                                    class="mt-1 w-full bg-transparent border-none p-0 text-sm leading-relaxed resize-none focus:ring-0 custom-scrollbar h-16"
+                                    class="mt-1 w-full bg-transparent border-none p-0 text-sm leading-relaxed resize-none focus:ring-0 custom-scrollbar h-20"
                                     placeholder="Descreva aqui os traços de personalidade do seu personagem...">@Model.Character.PersonalityTraits</textarea>
                         </div>
                         <div class="p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
@@ -160,34 +159,18 @@
                                     class="mt-1 w-full bg-transparent border-none p-0 text-sm leading-relaxed resize-none focus:ring-0 custom-scrollbar h-16"
                                     placeholder="Quais são os ideais do seu personagem?">@Model.Character.Ideals</textarea>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Equipment Preview -->
-                <div class="p-6 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">backpack</span>
-                            Equipamento
-                        </h3>
-                        <div class="flex gap-2 text-xs font-bold bg-slate-100 dark:bg-[#48232c] px-3 py-1 rounded-full">
-                            <span class="text-yellow-600 dark:text-yellow-500">125 PO</span>
-                            <span class="text-slate-400">|</span>
-                            <span class="text-slate-500">42/150 lb</span>
+                        <div class="p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
+                            <span class="text-[10px] font-bold text-primary uppercase">Laços</span>
+                            <textarea name="bonds"
+                                    class="mt-1 w-full bg-transparent border-none p-0 text-sm leading-relaxed resize-none focus:ring-0 custom-scrollbar h-16"
+                                    placeholder="Quais são os laços do seu personagem?">@Model.Character.Bonds</textarea>
                         </div>
-                    </div>
-
-                    <!-- sua lista visual de itens permanece aqui -->
-
-                    <button class="w-full mt-4 py-2 text-primary font-bold text-sm border border-dashed border-primary/40 rounded-lg hover:bg-primary/5 transition-colors" type="button">
-                        + Adicionar item
-                    </button>
-
-                    <div class="mt-4">
-                        <label class="text-[10px] font-bold text-primary uppercase">Notas de equipamento</label>
-                        <textarea name="equipmentNotes"
-                                class="mt-1 w-full bg-transparent border border-border-dark/40 rounded-lg p-2 text-sm leading-relaxed resize-none focus:ring-1 focus:ring-primary custom-scrollbar h-20"
-                                placeholder="Use este espaço para anotar itens especiais, mudanças de equipamento, etc.">@Model.Character.EquipmentNotes</textarea>
+                        <div class="p-4 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
+                            <span class="text-[10px] font-bold text-primary uppercase">Defeitos</span>
+                            <textarea name="flaws"
+                                    class="mt-1 w-full bg-transparent border-none p-0 text-sm leading-relaxed resize-none focus:ring-0 custom-scrollbar h-16"
+                                    placeholder="Quais são os defeitos do seu personagem?">@Model.Character.Flaws</textarea>
+                        </div>
                     </div>
                 </div>
             </div>
