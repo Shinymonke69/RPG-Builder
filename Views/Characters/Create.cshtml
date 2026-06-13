@@ -14,7 +14,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
             <div class="flex flex-col gap-2">
                 <a asp-controller="Home" asp-action="Index"
-                class="inline-flex items-center justify-center h-9 w-9 rounded-full border border-border-dark text-muted-dark hover:bg-surface-dark transition-colors">
+                class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white border border-border-dark text-muted-dark hover:bg-surface-dark transition-colors">
                     <span class="material-symbols-outlined text-base">arrow_back</span>
                 </a>
                 <h1 class="text-5xl font-black tracking-tight">Novo Personagem</h1>
@@ -31,7 +31,7 @@
         <div class="mt-8 rounded-2xl bg-blue-550/80 dark:bg-blue-550/70 border border-blue-550/70 shadow-xl p-6 md:p-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-1 flex flex-col gap-6">
-                    <div class="rounded-xl bg-surface-dark border border-border-dark p-6">
+                    <div class="rounded-xl bg-white bg-surface-dark border border-border-dark p-6">
 
                         <div class="space-y-4">
                             <div>
@@ -99,7 +99,7 @@
                                 string modText = mod >= 0 ? $"+{mod}" : mod.ToString();
                                 int percent = Math.Min(100, Math.Max(0, (val * 100) / 20));
 
-                                <div class="flex flex-col p-4 rounded-xl bg-surface-dark border border-border-dark group hover:border-primary/50 transition-colors">
+                                <div class="flex flex-col p-4 rounded-xl bg-white bg-surface-dark border border-border-dark group hover:border-primary/50 transition-colors">
                                     <div class="flex justify-between items-center mb-2">
                                         <span class="text-xs font-bold text-muted-dark uppercase tracking-widest">@stat.Name</span>
                                         <span class="text-primary text-xs font-bold stat-modifier">@modText</span>
@@ -125,19 +125,19 @@
                                 Personalidade &amp; História
                             </h3>
                             <div class="space-y-4" id="traits-container">
-                                <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
+                                <div class="p-3 bg-white border border-border-dark rounded-lg">
                                     <span class="text-[10px] font-bold text-primary uppercase">Traços de Personalidade</span>
                                     <textarea name="personalityTraits" id="bg-personality" rows="3" class="w-full bg-transparent border-none p-0 text-sm whitespace-pre-wrap leading-relaxed focus:ring-0 resize-y"></textarea>
                                 </div>
-                                <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
+                                <div class="p-3 bg-white border border-border-dark rounded-lg">
                                     <span class="text-[10px] font-bold text-primary uppercase">Ideais</span>
                                     <textarea name="ideals" id="bg-ideals" rows="2" class="w-full bg-transparent border-none p-0 text-sm whitespace-pre-wrap leading-relaxed focus:ring-0 resize-y"></textarea>
                                 </div>
-                                <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
+                                <div class="p-3 bg-white border border-border-dark rounded-lg">
                                     <span class="text-[10px] font-bold text-primary uppercase">Laços</span>
                                     <textarea name="bonds" id="bg-bonds" rows="2" class="w-full bg-transparent border-none p-0 text-sm whitespace-pre-wrap leading-relaxed focus:ring-0 resize-y"></textarea>
                                 </div>
-                                <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
+                                <div class="p-3 bg-white border border-border-dark rounded-lg">
                                     <span class="text-[10px] font-bold text-primary uppercase">Defeitos</span>
                                     <textarea name="flaws" id="bg-flaws" rows="2" class="w-full bg-transparent border-none p-0 text-sm whitespace-pre-wrap leading-relaxed focus:ring-0 resize-y"></textarea>
                                 </div>
@@ -148,7 +148,7 @@
                                 <span class="material-symbols-outlined text-primary">inventory_2</span>
                                 Equipamento inicial
                             </h3>
-                            <div class="p-3 bg-surface-dark/50 border border-border-dark rounded-lg">
+                            <div class="p-3 bg-white border border-border-dark rounded-lg">
                                 <textarea name="equipmentNotes" id="equipment-list" rows="10" class="w-full bg-transparent border-none p-0 text-sm whitespace-pre-wrap leading-relaxed focus:ring-0 resize-y"></textarea>
                             </div>
                         </div>

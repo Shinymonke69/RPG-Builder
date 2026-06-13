@@ -328,7 +328,8 @@ public class CharactersController(RpgDbContext db) : Controller
     int intelligence,
     int wisdom,
     int charisma,
-    int[] proficientSkills)
+    int[] proficientSkills,
+    int[]? selectedSpells)
     {
         var character = await db.Characters.FindAsync(id);
         if (character == null) return NotFound();
@@ -378,6 +379,10 @@ public class CharactersController(RpgDbContext db) : Controller
         var existingSkills = await db.CharacterSkills.Where(cs => cs.CharacterId == id).ToListAsync();
         db.CharacterSkills.RemoveRange(existingSkills);
 
+        // atualizar magias do personagem
+        var existingSpells = await db.CharacterSpells.Where(cs => cs.CharacterId == id).ToListAsync();
+        db.CharacterSpells.RemoveRange(existingSpells);
+
         if (proficientSkills != null)
         {
             foreach (var skillId in proficientSkills)
@@ -388,6 +393,34 @@ public class CharactersController(RpgDbContext db) : Controller
                     SkillId = skillId,
                     IsProficient = true,
                     Bonus = 0 
+                });
+            }
+        }
+
+        if (proficientSkills != null)
+        {
+            foreach (var skillId in proficientSkills)
+            {
+                db.CharacterSkills.Add(new CharacterSkill
+                {
+                    CharacterId = id,
+                    SkillId = skillId,
+                    IsProficient = true,
+                    Bonus = 0 
+                });
+            }
+        }
+
+        if (selectedSpells != null)
+        {
+            foreach (var spellId in selectedSpells)
+            {
+                db.CharacterSpells.Add(new CharacterSpell
+                {
+                    CharacterId = id,
+                    SpellId = spellId,
+                    IsPrepared = false,
+                    SlotLevel = 0
                 });
             }
         }
