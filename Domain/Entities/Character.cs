@@ -3,10 +3,13 @@ namespace RpgBuilderMvc.Domain.Entities;
 public class Character
 {
     public int Id { get; set; }
+    public int UserId { get; set; }
+    public User User { get; set; } = null!;
     public string Name { get; set; } = null!;
     public int Level { get; set; }
     public int Xp { get; set; }
     public int CurrentHp { get; set; }
+    public int TemporaryHp { get; set; }
     public string Status { get; set; } = "Ativo";
 
     public string ClassIndex { get; set; } = null!;

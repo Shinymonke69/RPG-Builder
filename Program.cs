@@ -23,6 +23,15 @@ builder.Services.AddScoped<SrdImporter>();
 // MVC
 builder.Services.AddControllersWithViews();
 
+// Authentication
+builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.LogoutPath = "/Auth/Logout";
+        options.Cookie.Name = "RpgBuilderSession";
+    });
+
 var app = builder.Build();
 
 var skills = new[]
@@ -402,6 +411,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

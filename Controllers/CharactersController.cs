@@ -5,8 +5,12 @@ using RpgBuilderMvc.Infrastructure.Persistence;
 using RpgBuilderMvc.Application.ViewModels;
 using RpgBuilderMvc.Services;
 
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 namespace RpgBuilderMvc.Controllers;
 
+[Authorize]
 public class CharactersController(RpgDbContext db) : Controller
 {
     private readonly Random random = new();
@@ -171,7 +175,8 @@ public class CharactersController(RpgDbContext db) : Controller
     string? flaws,
     string? equipmentNotes,
     int xp = 0,
-    int currentHp = 0
+    int currentHp = 0,
+    int temporaryHp = 0
 )
     {
         var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
@@ -192,12 +197,30 @@ public class CharactersController(RpgDbContext db) : Controller
             return View();
         }
 
+        var hitDiceMap = new Dictionary<string, int> {
+            { "barbarian", 12 }, { "bard", 8 }, { "warlock", 8 }, { "cleric", 8 },
+            { "druid", 8 }, { "sorcerer", 6 }, { "fighter", 10 }, { "rogue", 8 },
+            { "wizard", 6 }, { "monk", 8 }, { "paladin", 10 }, { "ranger", 10 }
+        };
+        int hd = hitDiceMap.GetValueOrDefault(cls.Index, 8);
+        int conMod = (int)Math.Floor((constitution - 10) / 2.0);
+        
+        int finalHp = currentHp;
+        if (finalHp == 0) 
+        {
+            int lvl = level == 0 ? 1 : level;
+            int avgHitDie = (int)Math.Floor(hd / 2.0) + 1;
+            finalHp = (hd + conMod) + (lvl - 1) * Math.Max(1, avgHitDie + conMod);
+        }
+
         var character = new Character
         {
+            UserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
             Name = name,
             Level = level == 0 ? 1 : level,
             Xp = xp,
-            CurrentHp = currentHp,
+            CurrentHp = finalHp,
+            TemporaryHp = temporaryHp,
             Status = "Ativo",
 
             ClassIndex = cls.Index,
@@ -280,6 +303,9 @@ public class CharactersController(RpgDbContext db) : Controller
     {
         var character = await db.Characters.FindAsync(id);
         if (character == null) return NotFound();
+        
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        if (character.UserId != userId) return Forbid();
 
         var classes = await db.Classes.OrderBy(c => c.Name).ToListAsync();
         var races = await db.Races.OrderBy(r => r.Name).ToListAsync();
@@ -342,6 +368,7 @@ public class CharactersController(RpgDbContext db) : Controller
     string equipmentNotes,
     int xp,
     int currentHp,
+    int temporaryHp,
     int strength,
     int dexterity,
     int constitution,
@@ -355,11 +382,15 @@ public class CharactersController(RpgDbContext db) : Controller
     {
         var character = await db.Characters.FindAsync(id);
         if (character == null) return NotFound();
+        
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        if (character.UserId != userId) return Forbid();
 
         character.Name = name;
         character.Level = level;
         character.Xp = xp;
         character.CurrentHp = currentHp;
+        character.TemporaryHp = temporaryHp;
         character.Status = status ?? "Ativo";
 
         var cls = await db.Classes.FirstOrDefaultAsync(c => c.Index == classIndex);
@@ -477,6 +508,9 @@ public class CharactersController(RpgDbContext db) : Controller
     {
         var character = await db.Characters.FindAsync(id);
         if (character == null) return NotFound();
+        
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        if (character.UserId != userId) return Forbid();
 
         db.Characters.Remove(character);
         await db.SaveChangesAsync();

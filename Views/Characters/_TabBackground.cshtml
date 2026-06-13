@@ -95,7 +95,7 @@
                     <div class="grid grid-cols-2 gap-4 mt-2">
                         <div class="flex flex-col">
                             <span class="text-[10px] font-bold text-slate-500 dark:text-[#c992a0] uppercase">PV temporários</span>
-                            <input class="bg-slate-100 dark:bg-[#34181f] border-none rounded p-1 text-sm focus:ring-1 focus:ring-primary" type="text" value="5"/>
+                            <input name="temporaryHp" class="bg-slate-100 dark:bg-[#34181f] border-none rounded p-1 text-sm focus:ring-1 focus:ring-primary" type="number" min="0" max="100" value="@Model.Character.TemporaryHp"/>
                         </div>
                         <div class="flex flex-col">
                             <span class="text-[10px] font-bold text-slate-500 dark:text-[#c992a0] uppercase">Dados de vida</span>

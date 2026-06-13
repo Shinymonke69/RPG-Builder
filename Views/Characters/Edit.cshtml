@@ -99,9 +99,7 @@
                 document.querySelectorAll('.stat-input').forEach(input => {
                     input.addEventListener('input', function () {
                         let val = parseInt(this.value);
-                        if (isNaN(val)) val = 8;
-                        if (val < 8) { this.value = 8; val = 8; }
-                        if (val > 20) { this.value = 20; val = 20; }
+                        if (isNaN(val)) return;
 
                         let mod = Math.floor((val - 10) / 2);
                         let modText = mod >= 0 ? "+" + mod : mod.toString();
@@ -138,11 +136,10 @@
                         let v = parseInt(this.value);
                         if (isNaN(v) || v < 8) {
                             this.value = 8;
-                            this.dispatchEvent(new Event('input'));
                         } else if (v > 20) {
                             this.value = 20;
-                            this.dispatchEvent(new Event('input'));
                         }
+                        this.dispatchEvent(new Event('input'));
                     });
                 });
 
@@ -197,7 +194,7 @@
                     if (initEl) initEl.innerText = (initiative >= 0 ? "+" + initiative : initiative.toString());
                 }
 
-                function updateHP() {
+                function updateHP(isLevelUp = false) {
                     const hitDiceMap = {
                         'barbarian': 12,
                         'bard': 8,
@@ -237,13 +234,19 @@
                     const currentHpInput = document.getElementById('current-hp-input');
                     if (currentHpInput) {
                         let currentHp = parseInt(currentHpInput.value);
-                        if (isNaN(currentHp) || currentHp < 0) {
-                            currentHp = 0;
-                            currentHpInput.value = 0;
-                        }
-                        if (currentHp > maxHp) {
+                        
+                        if (isLevelUp === true) {
                             currentHp = maxHp;
                             currentHpInput.value = maxHp;
+                        } else {
+                            if (isNaN(currentHp) || currentHp < 0) {
+                                currentHp = 0;
+                                currentHpInput.value = 0;
+                            }
+                            if (currentHp > maxHp) {
+                                currentHp = maxHp;
+                                currentHpInput.value = maxHp;
+                            }
                         }
 
                         const hpBar = document.getElementById('hp-bar');
@@ -286,7 +289,7 @@
                     if (parseInt(levelInput.value) !== newLevel) {
                         levelInput.value = newLevel;
                         updateSkills();
-                        updateHP();
+                        updateHP(true); // Heal to max on level up
                     }
 
                     const maxXP = newLevel < 20 ? xpThresholds[newLevel] : 355000;
@@ -321,13 +324,18 @@
                     
                     if (currentXp < minXp || currentXp >= maxXP) {
                         xpInput.value = minXp;
+                        // updateXP will also be called, but we handle healing here
                         updateXP();
                     }
+                    
+                    // Manually healing when changing level via input
+                    updateSkills();
+                    updateHP(true);
                 });
 
                 // Attach events for dynamic updates
                 document.querySelectorAll('.stat-input, input[name="level"]').forEach(input => {
-                    input.addEventListener('input', () => {
+                    input.addEventListener('change', () => {
                         updateSkills();
                         updateHP();
                     });
@@ -337,15 +345,15 @@
                 });
                 const classSelect = document.querySelector('select[name="classIndex"]');
                 if (classSelect) {
-                    classSelect.addEventListener('change', updateHP);
+                    classSelect.addEventListener('change', () => updateHP(false));
                 }
                 const currentHpInput = document.getElementById('current-hp-input');
                 if (currentHpInput) {
-                    currentHpInput.addEventListener('input', updateHP);
+                    currentHpInput.addEventListener('change', () => updateHP(false));
                 }
                 const xpInput = document.querySelector('input[name="xp"]');
                 if (xpInput) {
-                    xpInput.addEventListener('input', updateXP);
+                    xpInput.addEventListener('change', updateXP);
                 }
 
                 // inicializa os modificadores/barras com os valores atuais

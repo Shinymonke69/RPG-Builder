@@ -178,9 +178,7 @@
         document.querySelectorAll('.stat-input').forEach(input => {
             input.addEventListener('input', function() {
                 let val = parseInt(this.value);
-                if (isNaN(val)) val = 8;
-                if (val < 8) { this.value = 8; val = 8; }
-                if (val > 20) { this.value = 20; val = 20; }
+                if (isNaN(val)) return;
 
                 let mod = Math.floor((val - 10) / 2);
                 let modText = mod >= 0 ? "+" + mod : mod.toString();
@@ -195,11 +193,10 @@
             input.addEventListener('change', function() {
                 if (parseInt(this.value) < 8 || isNaN(parseInt(this.value))) {
                     this.value = 8;
-                    this.dispatchEvent(new Event('input'));
                 } else if (parseInt(this.value) > 20) {
                     this.value = 20;
-                    this.dispatchEvent(new Event('input'));
                 }
+                this.dispatchEvent(new Event('input'));
             });
         });
 

@@ -1,0 +1,126 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D&D Vault - Entrar</title>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,200..800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#4052D6",
+                    "background-light": "#f8f6f6",
+                    "background-dark": "#221016",
+                },
+                fontFamily: {
+                    "display": ["Work Sans", "sans-serif"]
+                },
+                borderRadius: {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+                },
+            },
+        },
+    }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen selection:bg-primary/30">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+        <div class="absolute inset-0 z-0 overflow-hidden">
+            <div class="absolute inset-0 bg-background-light/80 dark:bg-background-dark/80 z-10"></div>
+            <div class="w-full h-full bg-center bg-no-repeat bg-cover opacity-50 dark:opacity-100" data-alt="A cozy candlelit medieval library with ancient scrolls and books" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDK_xm7ktILGvknVwclBAmMTlnNxSqvtu6s-7K-HM3PfnYIzYAfqcKbVD41waWGefNtAKld6o74uf2VEB-ym9BQDkH5906MBtPb84Shh5ikXNP-8C_YvR3lJSIcPkteQpepJ6POUBiDae_4-kOLIO5GFAIq8J6UkmdRSCJtmeQQ6vgfZwIlpCfv3_ND_yY6KRP_1Nf9eJRbfLwtIYDoBonc7TLSdAB-melBZIJG5cfMwjQP3YoIbj7M4r-QfKZksL8ZjWF8sYXWDbM");'>
+            </div>
+        </div>
+        <div class="relative z-20 flex h-full grow flex-col">
+            <header class="flex items-center justify-between px-6 py-4 lg:px-20 border-b border-primary/20 bg-background-light/40 dark:bg-background-dark/40 backdrop-blur-md">
+                <div class="flex items-center gap-3">
+                    <div class="text-primary size-8 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-3xl">swords</span>
+                    </div>
+                    <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">RPG-Builder</h2>
+                </div>
+            </header>
+
+            <main class="flex-1 flex items-center justify-center p-6">
+                <div class="w-full max-w-md">
+                    <div class="relative bg-white dark:bg-black/40 rounded-xl shadow-2xl overflow-hidden border-[4px] border-primary/40 backdrop-blur-md">
+                        
+                        <div class="relative p-8 lg:p-10 space-y-8">
+                            <div class="text-center space-y-2">
+                                <span class="text-primary font-bold uppercase tracking-widest text-xs">Teste de Iniciativa</span>
+                                <h1 class="text-4xl font-black text-slate-900 dark:text-white leading-none">Entre na Guilda</h1>
+                                <p class="text-slate-600 dark:text-slate-400 text-lg italic">Bem vindo de volta jogador.</p>
+                            </div>
+
+                            @if (!ViewData.ModelState.IsValid)
+                            {
+                                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                    <div asp-validation-summary="All" class="text-sm"></div>
+                                </div>
+                            }
+
+                            <form asp-controller="Auth" asp-action="Login" method="post" class="space-y-6">
+                                <div class="space-y-2">
+                                    <label class="block text-slate-900 dark:text-slate-300 font-bold text-sm uppercase tracking-wide px-1">
+                                        E-mail ou Nome do Aventureiro
+                                    </label>
+                                    <div class="relative group">
+                                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-primary transition-colors">person</span>
+                                        <input name="identifier" value="@ViewBag.Identifier" required class="w-full pl-12 pr-4 py-4 bg-white dark:bg-black/50 border-2 border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-sans" placeholder="E-mail ou Usuário" type="text" />
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center px-1">
+                                        <label class="block text-slate-900 dark:text-slate-300 font-bold text-sm uppercase tracking-wide">
+                                            Palavra Secreta
+                                        </label>
+                                    </div>
+                                    <div class="relative group">
+                                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-primary transition-colors">lock</span>
+                                        <input name="password" required class="w-full pl-12 pr-12 py-4 bg-white dark:bg-black/50 border-2 border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-sans" placeholder="••••••••" type="password" />
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-2 px-1">
+                                    <input name="rememberMe" value="true" class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-primary focus:ring-primary bg-white dark:bg-black" id="remember" type="checkbox" />
+                                    <label class="text-sm text-slate-700 dark:text-slate-300 font-medium cursor-pointer" for="remember">Continuar logado para a próxima campanha</label>
+                                </div>
+
+                                <button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-lg shadow-lg shadow-primary/30 transform active:scale-[0.98] transition-all flex items-center justify-center gap-2 group" type="submit">
+                                    <span>Começar Aventura</span>
+                                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                </button>
+                            </form>
+
+                            <div class="relative">
+                                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-300 dark:border-slate-700"></div></div>
+                                <div class="relative flex justify-center text-sm">
+                                    <span class="px-4 bg-white dark:bg-[#1a0c10] text-slate-500 font-medium italic">Novo por aqui?</span>
+                                </div>
+                            </div>
+
+                            <a asp-action="Register" class="block text-center w-full border-2 border-slate-400 dark:border-slate-600 hover:border-primary hover:text-primary text-slate-700 dark:text-slate-300 font-bold py-3 rounded-lg transition-all">
+                                Criar Novo Herói
+                            </a>
+                        </div>
+                        <div class="h-2 bg-gradient-to-r from-primary/50 via-primary to-primary/50 opacity-80"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

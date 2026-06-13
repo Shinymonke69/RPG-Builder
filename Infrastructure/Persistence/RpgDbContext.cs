@@ -19,4 +19,5 @@ public class RpgDbContext(DbContextOptions<RpgDbContext> options) : DbContext(op
     public DbSet<CharacterArmor> CharacterArmors => Set<CharacterArmor>();
 
     public DbSet<Character> Characters => Set<Character>();
+    public DbSet<User> Users => Set<User>();
 }
