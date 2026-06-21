@@ -1,4 +1,4 @@
-namespace RpgBuilderMvc.DndApi.Models;
+﻿namespace RpgBuilderMvc.DndApi.Models;
 
 public class SpellDto
 {
@@ -15,6 +15,6 @@ public class SpellDto
     public List<string> Components { get; set; } = [];
     public string? Material { get; set; }
 
-    // Descrição principal
+    
     public List<string> Desc { get; set; } = [];
 }

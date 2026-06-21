@@ -4,10 +4,10 @@
 
 namespace RpgBuilderMvc.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class UpdateRaceSpeedToDouble : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<double>(
@@ -19,7 +19,7 @@ namespace RpgBuilderMvc.Migrations
                 oldType: "INTEGER");
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<int>(
@@ -32,3 +32,4 @@ namespace RpgBuilderMvc.Migrations
         }
     }
 }
+

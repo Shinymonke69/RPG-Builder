@@ -4,10 +4,10 @@
 
 namespace RpgBuilderMvc.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class AddCharacterSpells : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -49,7 +49,7 @@ namespace RpgBuilderMvc.Migrations
                 column: "SpellId");
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -57,3 +57,4 @@ namespace RpgBuilderMvc.Migrations
         }
     }
 }
+

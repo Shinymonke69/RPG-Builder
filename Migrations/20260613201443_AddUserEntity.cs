@@ -4,10 +4,10 @@
 
 namespace RpgBuilderMvc.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class AddUserEntity : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
@@ -45,7 +45,7 @@ namespace RpgBuilderMvc.Migrations
                 onDelete: ReferentialAction.Cascade);
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
@@ -65,3 +65,4 @@ namespace RpgBuilderMvc.Migrations
         }
     }
 }
+

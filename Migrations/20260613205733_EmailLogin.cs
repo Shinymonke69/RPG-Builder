@@ -4,10 +4,10 @@
 
 namespace RpgBuilderMvc.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class EmailLogin : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
@@ -16,7 +16,7 @@ namespace RpgBuilderMvc.Migrations
                 newName: "Email");
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
@@ -26,3 +26,4 @@ namespace RpgBuilderMvc.Migrations
         }
     }
 }
+

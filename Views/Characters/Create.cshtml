@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewData["Title"] = "Novo Personagem";
 }
 @{
@@ -174,7 +174,7 @@
 
 @section Scripts {
     <script>
-        // ── Atributos ──────────────────────────────────────────
+        
         document.querySelectorAll('.stat-input').forEach(input => {
             input.addEventListener('input', function() {
                 let val = parseInt(this.value);
@@ -200,13 +200,13 @@
             });
         });
 
-        // ── Traços do antecedente ────
+        
         @{
             var bgJson = System.Text.Json.JsonSerializer.Serialize(backgrounds);
         }
         const backgroundsData = @Html.Raw(bgJson);
 
-                // ── Equipamento inicial por classe ─────────────────────
+                
         @{
             var classEquipDict = new Dictionary<string, string>();
             foreach (var c in classes)
@@ -241,7 +241,7 @@
 
         updateTraits(bgSelect.value);
 
-        // ── Equipamento inicial da classe
+        
         const classSelect = document.querySelector('select[name="classIndex"]');
         if (classSelect) {
             classSelect.addEventListener("change", function () {
@@ -266,4 +266,5 @@
         }
     </script>
 }
+
 

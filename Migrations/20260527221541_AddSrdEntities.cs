@@ -4,10 +4,10 @@
 
 namespace RpgBuilderMvc.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class AddSrdEntities : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
@@ -117,7 +117,7 @@ namespace RpgBuilderMvc.Migrations
                 });
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -155,3 +155,4 @@ namespace RpgBuilderMvc.Migrations
         }
     }
 }
+

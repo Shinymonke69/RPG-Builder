@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -105,7 +105,7 @@ public class AuthController(RpgDbContext db) : Controller
         db.Users.Add(user);
         await db.SaveChangesAsync();
 
-        // Faz login automático após registrar
+        
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -130,3 +130,4 @@ public class AuthController(RpgDbContext db) : Controller
         return RedirectToAction("Login");
     }
 }
+

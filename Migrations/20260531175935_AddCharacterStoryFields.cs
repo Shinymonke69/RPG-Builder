@@ -4,10 +4,10 @@
 
 namespace RpgBuilderMvc.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class AddCharacterStoryFields : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
@@ -35,7 +35,7 @@ namespace RpgBuilderMvc.Migrations
                 nullable: true);
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
@@ -56,3 +56,4 @@ namespace RpgBuilderMvc.Migrations
         }
     }
 }
+

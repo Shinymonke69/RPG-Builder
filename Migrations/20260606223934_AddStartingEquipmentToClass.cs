@@ -4,10 +4,10 @@
 
 namespace RpgBuilderMvc.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class AddStartingEquipmentToClass : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
@@ -18,7 +18,7 @@ namespace RpgBuilderMvc.Migrations
                 defaultValue: "");
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
@@ -27,3 +27,4 @@ namespace RpgBuilderMvc.Migrations
         }
     }
 }
+

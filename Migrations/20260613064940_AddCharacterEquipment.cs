@@ -4,10 +4,10 @@
 
 namespace RpgBuilderMvc.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class AddCharacterEquipment : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
@@ -93,7 +93,7 @@ namespace RpgBuilderMvc.Migrations
                 column: "WeaponId");
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -118,3 +118,4 @@ namespace RpgBuilderMvc.Migrations
         }
     }
 }
+

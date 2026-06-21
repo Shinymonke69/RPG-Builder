@@ -123,7 +123,6 @@ C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\scopedcss\bundl
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\scopedcss\projectbundle\RpgBuilderMvc.bundle.scp.css
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\jzkidd8ylz-{0}-b9sayid5wm-b9sayid5wm.gz
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\pcwucys0w6-{0}-61n19gt1b8-61n19gt1b8.gz
-C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\s5s6rxpid3-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\oap0h95x8y-{0}-t1cqhe9u97-t1cqhe9u97.gz
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\m08shgqutc-{0}-c2jlpeoesf-c2jlpeoesf.gz
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\pak0evekve-{0}-sejl45xvog-sejl45xvog.gz
@@ -183,8 +182,6 @@ C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\llh8
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\77pi5w2urf-{0}-9vr69e8ynj-9vr69e8ynj.gz
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\ab9hwnjzpy-{0}-87fc7y1x7t-87fc7y1x7t.gz
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\zy13zvebgu-{0}-mlv21k5csn-mlv21k5csn.gz
-C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\clphf4av7q-{0}-5061o6daz1-5061o6daz1.gz
-C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\cjxqzx7685-{0}-5061o6daz1-5061o6daz1.gz
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\staticwebassets.build.json
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\staticwebassets.build.json.cache
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\staticwebassets.development.json
@@ -215,3 +212,6 @@ C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\bin\Debug\net10.0\zh-Hans\Microso
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\bin\Debug\net10.0\RandomNameGeneratorLibrary.dll
 C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\bin\Debug\net10.0\BCrypt-Net-Next.dll
+C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\s5s6rxpid3-{0}-mrqelfoqb7-mrqelfoqb7.gz
+C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\clphf4av7q-{0}-pxbr6r84k4-pxbr6r84k4.gz
+C:\Users\gabri\Documents\C_Sharp\RpgBuilderMvc\obj\Debug\net10.0\compressed\cjxqzx7685-{0}-pxbr6r84k4-pxbr6r84k4.gz

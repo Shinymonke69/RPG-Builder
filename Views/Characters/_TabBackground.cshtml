@@ -1,4 +1,4 @@
-@model RpgBuilderMvc.Application.ViewModels.CharacterEditViewModel
+﻿@model RpgBuilderMvc.Application.ViewModels.CharacterEditViewModel
 
 <div class="layout-content-container flex flex-col max-w-[1024px] mx-auto gap-8">
     <div id="tab-atributos">
@@ -35,11 +35,11 @@
             </div>
         </div>
 
-        <!-- Content Grid -->
+        
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Left Column: Abilities & Health -->
+            
             <div class="lg:col-span-4 flex flex-col gap-6">
-                <!-- Ability Scores -->
+                
                 @{
                     var stats = new[]
                     {
@@ -77,7 +77,7 @@
                     }
                 </div>
 
-                <!-- Vital Stats -->
+                
                 <div class="p-6 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent flex flex-col gap-4">
                     <div class="flex justify-between items-end">
                         <div class="flex flex-col">
@@ -105,9 +105,9 @@
                 </div>
             </div>
 
-            <!-- Right Column: Skills, Inventory, Backstory -->
+            
             <div class="lg:col-span-8 flex flex-col gap-6">
-                <!-- Skills List (Scrollable) -->
+                
                 <div class="p-6 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent mt-6">
                     <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
                         <span class="material-symbols-outlined text-primary">list_alt</span>
@@ -135,7 +135,7 @@
                     </div>
                 </div>
 
-                <!-- Backstory & Personality -->
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="p-6 rounded-xl border border-slate-200 dark:border-[#48232c] bg-white dark:bg-transparent">
                         <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
