@@ -4,10 +4,10 @@
 
 namespace RpgBuilderMvc.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class AddSkillsForCharacters : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -65,7 +65,7 @@ namespace RpgBuilderMvc.Migrations
                 column: "SkillId");
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -76,3 +76,4 @@ namespace RpgBuilderMvc.Migrations
         }
     }
 }
+

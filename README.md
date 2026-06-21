@@ -1,4 +1,4 @@
-# RPG-Builder
+﻿# RPG-Builder
 
 Sistema web completo para criação e gerenciamento de personagens de RPG (D&D 5e), com geração automática de atributos, sistema de autenticação de contas isoladas e personalização profunda de inventário, feitiços e histórico.
 
@@ -22,11 +22,11 @@ Sistema web completo para criação e gerenciamento de personagens de RPG (D&D 5
 
 1. Clone este repositório:
 ```bash
-git clone https://github.com/Shinymonke69/RPG-Builder.git
+git clone https:
 ```
 
 2. Instale as dependências e ferramentas necessárias:
-- Certifique-se de ter o [.NET SDK](https://dotnet.microsoft.com/download) instalado na sua máquina.
+- Certifique-se de ter o [.NET SDK](https:
 - Restaure os pacotes NuGet do projeto:
 ```bash
 dotnet restore
@@ -44,14 +44,14 @@ Abra o terminal na pasta raiz e execute:
 ```bash
 dotnet run
 ```
-5. Acesse no navegador em `https://localhost:7041` ou a porta indicada no seu terminal.
+5. Acesse no navegador em `https:
 
 ## Dependências externas de API
 
-Durante a inicialização ou sincronização de dados (via `SrdSyncController`), este projeto pode utilizar a API pública [D&D 5e API](https://www.dnd5eapi.co) para buscar dados dinâmicos do sistema de D&D.
+Durante a inicialização ou sincronização de dados (via `SrdSyncController`), este projeto pode utilizar a API pública [D&D 5e API](https:
 1. Endpoints consumidos (exemplo):
-- `GET https://www.dnd5eapi.co/api/classes/` — Retorna dados das classes.
-- `GET https://www.dnd5eapi.co/api/races/` — Retorna dados das raças.
+- `GET https:
+- `GET https:
 - O consumo é feito pelo `Dnd5eClient` usando o `HttpClient` nativo do .NET.
 
 ## Como contribuir
@@ -65,3 +65,4 @@ Durante a inicialização ou sincronização de dados (via `SrdSyncController`),
 ## Licença
 
 Este projeto está licenciado sob a Licença MIT. Veja mais detalhes no arquivo LICENSE.md.
+

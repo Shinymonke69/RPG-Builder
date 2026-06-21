@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RpgBuilderMvc.Domain.Entities;
 using RpgBuilderMvc.Infrastructure.Persistence;
@@ -15,13 +15,13 @@ public class CharactersController(RpgDbContext db) : Controller
 {
     private readonly Random random = new();
 
-    // GET: /Characters
+    
     public IActionResult Index()
     {
         return RedirectToAction("Index", "Home");
     }
 
-    // GET: /Characters/Create
+    
     [HttpGet]
     public async Task<IActionResult> Create()
     {
@@ -47,19 +47,19 @@ public class CharactersController(RpgDbContext db) : Controller
             : "";
         ViewBag.RandomRace = randomRaceIndex;
 
-        // escolhe um background aleatório para começar
+        
         var randomBgIndex = backgrounds.Count > 0
             ? backgrounds[random.Next(backgrounds.Count)].Index
             : "";
 
         ViewBag.RandomBackground = randomBgIndex;
 
-        // monta texto de traços do background selecionado
+        
         var selectedBg = backgrounds.FirstOrDefault(b => b.Index == randomBgIndex);
 
         if (selectedBg != null)
         {
-            // aqui usamos os campos que você preencheu no Program.cs [web:246][web:247]
+            
             var parts = new List<string>();
 
             if (!string.IsNullOrWhiteSpace(selectedBg.Feature))
@@ -113,7 +113,7 @@ public class CharactersController(RpgDbContext db) : Controller
         var standardArray = new[] { 15, 14, 13, 12, 10, 8 };
         ViewBag.DefaultStats = standardArray.OrderBy(x => random.Next()).ToArray();
 
-        // monta texto de traços do background gerado
+        
         var selectedBg = backgrounds.FirstOrDefault(b => b.Index == randomCharacter.BackgroundIndex);
         if (selectedBg != null)
         {
@@ -153,7 +153,7 @@ public class CharactersController(RpgDbContext db) : Controller
         return View("Create");
     }
 
-    // POST: /Characters/Create
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
@@ -263,7 +263,7 @@ public class CharactersController(RpgDbContext db) : Controller
         var race = races[random.Next(races.Count)];
         var bg = backgrounds[random.Next(backgrounds.Count)];
 
-        int RollStat() => random.Next(8, 19); // 8–18
+        int RollStat() => random.Next(8, 19); 
 
         string fullName = NameGenerator.GenerateFullName();
 
@@ -298,7 +298,7 @@ public class CharactersController(RpgDbContext db) : Controller
         return character;
     }
 
-    // POST: /Characters/Edit/5
+    
     public async Task<IActionResult> Edit(int id)
     {
         var character = await db.Characters.FindAsync(id);
@@ -315,11 +315,11 @@ public class CharactersController(RpgDbContext db) : Controller
         ViewBag.Races = races;
         ViewBag.Backgrounds = backgrounds;
 
-        // se você quiser continuar com ViewModel:
+        
         var vm = new CharacterEditViewModel
         {
             Character = character,
-            // se quiser, também pode por as listas aqui:
+            
             Classes = classes,
             Races = races,
             Backgrounds = backgrounds,
@@ -349,7 +349,7 @@ public class CharactersController(RpgDbContext db) : Controller
         return View(vm);
     }
 
-    // POST: /Characters/Edit/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
@@ -414,7 +414,7 @@ public class CharactersController(RpgDbContext db) : Controller
             character.BackgroundName = bg.Name;
         }
 
-        // novos: salvar atributos
+        
         character.Strength = strength;
         character.Dexterity = dexterity;
         character.Constitution = constitution;
@@ -432,7 +432,7 @@ public class CharactersController(RpgDbContext db) : Controller
         var existingSkills = await db.CharacterSkills.Where(cs => cs.CharacterId == id).ToListAsync();
         db.CharacterSkills.RemoveRange(existingSkills);
 
-        // atualizar magias do personagem
+        
         var existingSpells = await db.CharacterSpells.Where(cs => cs.CharacterId == id).ToListAsync();
         db.CharacterSpells.RemoveRange(existingSpells);
 
@@ -501,7 +501,7 @@ public class CharactersController(RpgDbContext db) : Controller
         return RedirectToAction(nameof(Edit), new { id = character.Id });
     }
 
-    // POST: /Characters/Delete/5
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)

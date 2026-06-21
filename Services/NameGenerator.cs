@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace RpgBuilderMvc.Services;
 
@@ -33,11 +33,11 @@ public static class NameGenerator
         "Clethtinthiallor", "Daardendrian", "Delmirev", "Drachedandion", "Fenkenkabradon", "Kepeshkmolik", "Kerrhylon", "Kimbatuul", "Linxakasendalor", "Myastan", "Nemmonis", "Norixius", "Ophinshtalajiir", "Prexijandilin", "Shestendeliath", "Turnuroth", "Verthisathurgiesh", "Yarjerit"
     ];
 
-    // Tornamos o parâmetro opcional (padrão null) para não quebrar os Controllers
-    // que chamam GenerateFullName() sem passar argumento.
+    
+    
     public static string GenerateFullName(bool? isMale = null)
     {
-        // Se isMale não for especificado, escolhemos 50/50 aleatoriamente
+        
         bool generateMale = isMale ?? (random.NextDouble() >= 0.5);
 
         string firstName = generateMale

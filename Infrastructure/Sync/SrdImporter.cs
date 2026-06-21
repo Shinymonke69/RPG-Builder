@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RpgBuilderMvc.DndApi;
 using RpgBuilderMvc.DndApi.Models;
@@ -141,7 +141,7 @@ public class SrdImporter(Dnd5eClient client, RpgDbContext db)
         {
             Index = dto.Index,
             Name = dto.Name,
-            Speed = dto.Speed,  // agora é int direto
+            Speed = dto.Speed,  
             AbilityBonuses = abilityBonuses,
             Languages = languages,
             Traits = traits

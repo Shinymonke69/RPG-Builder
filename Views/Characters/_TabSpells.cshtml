@@ -1,4 +1,4 @@
-@model RpgBuilderMvc.Application.ViewModels.CharacterEditViewModel
+﻿@model RpgBuilderMvc.Application.ViewModels.CharacterEditViewModel
 
 <div class="layout-content-container flex flex-col max-w-[1024px] mx-auto gap-8">
     <div id="tab-magias">
@@ -68,7 +68,7 @@
 </div>
 
 <script>
-    // Valida e limita os campos de disponíveis/usadas por nível
+    
     document.querySelectorAll('.level-allowed, .level-used').forEach(input => {
         input.addEventListener('input', function () {
             let v = parseInt(this.value);
@@ -76,7 +76,7 @@
             if (v > 100) { v = 100; }
             this.value = v;
 
-            // se for usado > disponível, ajusta
+            
             const lvl = this.getAttribute('data-level');
             if (!lvl) return;
             const allowed = document.querySelector('.level-allowed[data-level="' + lvl + '"]');

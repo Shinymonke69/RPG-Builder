@@ -1,4 +1,4 @@
-namespace RpgBuilderMvc.Domain.Entities;
+﻿namespace RpgBuilderMvc.Domain.Entities;
 
 public class Character
 {
@@ -26,7 +26,7 @@ public class Character
     public int Wisdom { get; set; }
     public int Charisma { get; set; }
 
-    // Novos campos
+    
     public string? Story { get; set; }
     public string? PersonalityTraits { get; set; }
     public string? Ideals { get; set; }
