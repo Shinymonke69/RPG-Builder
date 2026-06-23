@@ -24,7 +24,6 @@ O projeto foi construído utilizando as mais recentes tecnologias do ecossistema
 - **ORM:** Entity Framework Core (10.0.7)
 - **Estilização Front-end:** Tailwind CSS
 - **Segurança (Senhas):** BCrypt.Net-Next (4.2.0)
-- **Geração Aleatória:** RandomNameGeneratorNG (2.0.2)
 
 ---
 
