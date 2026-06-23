@@ -90,7 +90,8 @@
                                     </div>
                                     <div class="relative group">
                                         <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-primary transition-colors">lock</span>
-                                        <input name="password" required class="w-full pl-12 pr-12 py-4 bg-white dark:bg-black/50 border-2 border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-sans" placeholder="••••••••" type="password" />
+                                        <input id="password" name="password" value="@ViewBag.Password" required class="w-full pl-12 pr-12 py-4 bg-white dark:bg-black/50 border-2 border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-sans" placeholder="••••••••" type="password" />
+                                        <span id="togglePasswordIcon" onclick="togglePassword('password', 'togglePasswordIcon')" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-primary cursor-pointer transition-colors" title="Mostrar/Esconder Senha">visibility</span>
                                     </div>
                                 </div>
 
@@ -122,5 +123,18 @@
             </main>
         </div>
     </div>
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerText = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.innerText = 'visibility';
+            }
+        }
+    </script>
 </body>
 </html>

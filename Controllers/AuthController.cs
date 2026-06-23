@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +24,7 @@ public class AuthController(RpgDbContext db) : Controller
     public async Task<IActionResult> Login(string identifier, string password, bool rememberMe)
     {
         ViewBag.Identifier = identifier;
+        ViewBag.Password = password;
         
         var user = await db.Users.FirstOrDefaultAsync(u => u.Email == identifier || u.Username == identifier);
 
@@ -70,10 +71,17 @@ public class AuthController(RpgDbContext db) : Controller
     {
         ViewBag.Email = email;
         ViewBag.Username = username;
+        ViewBag.Password = password;
         
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
             ModelState.AddModelError("", "Preencha todos os campos.");
+            return View();
+        }
+
+        if (password.Length < 8)
+        {
+            ModelState.AddModelError("", "A senha deve ter no mínimo 8 caracteres.");
             return View();
         }
 
