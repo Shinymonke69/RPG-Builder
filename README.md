@@ -52,7 +52,9 @@ O projeto foi preparado para rodar direto, sem configurações complexas.
 
 ### Pré-requisitos
 - Ter o **.NET SDK 10.0** instalado.
-- Terminal / Prompt de Comando.
+```bash
+winget install Microsoft.DotNet.SDK.10
+```   
 
 ### Passo a Passo
 
