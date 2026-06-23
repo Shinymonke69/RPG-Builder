@@ -1,4 +1,4 @@
-﻿@model RpgBuilderMvc.Application.ViewModels.CharacterEditViewModel
+@model RpgBuilderMvc.Application.ViewModels.CharacterEditViewModel
 
 @{
     ViewData["Title"] = "Editar Personagem";
@@ -408,22 +408,54 @@
                 
                 (function () {
                     const form = document.getElementById('edit-character-form');
-
                     if (!form) return;
-
                     let isDirty = false;
+                    let pendingUrl = null;
 
                     form.addEventListener('input', () => { isDirty = true; });
                     form.addEventListener('change', () => { isDirty = true; });
-
                     form.addEventListener('submit', () => {
                         isDirty = false;
                         window.onbeforeunload = null;
                     });
 
+                    document.querySelectorAll('a').forEach(link => {
+                        link.addEventListener('click', function(e) {
+                            const isTab = this.hasAttribute('data-tab') || (this.getAttribute('href') || '').startsWith('#');
+                            if (isDirty && !this.hasAttribute('data-ignore-dirty') && !isTab) {
+                                e.preventDefault();
+                                pendingUrl = this.href;
+                                const modal = document.getElementById('unsavedChangesModal');
+                                if (modal) {
+                                    modal.classList.remove('hidden');
+                                    modal.classList.add('flex');
+                                }
+                            }
+                        });
+                    });
+
+                    window.closeUnsavedModal = function() {
+                        const modal = document.getElementById('unsavedChangesModal');
+                        if (modal) {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                        }
+                        pendingUrl = null;
+                    }
+
+                    const confirmBtn = document.getElementById('confirmLeaveBtn');
+                    if (confirmBtn) {
+                        confirmBtn.addEventListener('click', function() {
+                            isDirty = false;
+                            window.onbeforeunload = null;
+                            if (pendingUrl) {
+                                window.location.href = pendingUrl;
+                            }
+                        });
+                    }
+
                     window.onbeforeunload = function (e) {
                         if (!isDirty) return;
-
                         e.preventDefault();
                         e.returnValue = '';
                         return '';
@@ -433,4 +465,32 @@
         }
     </main>
 </form>
+
+<!-- Unsaved Changes Modal -->
+<div id="unsavedChangesModal" class="fixed inset-0 z-[100] hidden items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/50 backdrop-blur-sm transition-opacity">
+    <div class="relative w-full max-w-md p-4">
+        <div class="relative rounded-2xl bg-white dark:bg-slate-800 shadow-2xl p-6 border border-slate-200 dark:border-slate-700">
+            <button type="button" onclick="closeUnsavedModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="flex flex-col items-center text-center mt-2">
+                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 mb-4">
+                    <span class="material-symbols-outlined text-3xl">warning</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Alterações não salvas!</h3>
+                <p class="text-slate-500 dark:text-slate-400 mb-6">
+                    Você modificou alguns campos deste personagem. Se você sair agora, todas as edições feitas não serão salvas.
+                </p>
+                <div class="flex gap-3 w-full">
+                    <button type="button" onclick="closeUnsavedModal()" class="flex-1 rounded-lg px-4 py-3 bg-primary text-white hover:bg-primary/90 font-bold transition-all shadow-lg shadow-primary/30">
+                        Ficar e Salvar
+                    </button>
+                    <button type="button" id="confirmLeaveBtn" class="flex-1 rounded-lg px-4 py-3 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold transition-all">
+                        Sair sem salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 

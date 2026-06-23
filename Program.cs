@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RpgBuilderMvc.DndApi;
 using RpgBuilderMvc.Infrastructure.Persistence;
 using RpgBuilderMvc.Infrastructure.Sync;
@@ -400,6 +400,18 @@ if (app.Environment.IsDevelopment())
         }
     }
     db.SaveChanges();
+
+    var testUserEmail = "teste@teste.com";
+    if (!db.Users.Any(u => u.Email == testUserEmail))
+    {
+        db.Users.Add(new User
+        {
+            Email = testUserEmail,
+            Username = "Testador",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Teste123!")
+        });
+        db.SaveChanges();
+    }
 }
 
 

@@ -81,14 +81,14 @@
                                            class="flex-1 py-2.5 rounded-lg bg-primary/10 text-primary text-sm font-bold hover:bg-primary hover:text-white transition-all text-center">
                                             Ver ficha do personagem
                                         </a>
-                                        <form asp-controller="Characters"
+                                        <form id="delete-form-@ch.Id" asp-controller="Characters"
                                               asp-action="Delete"
                                               asp-route-id="@ch.Id"
                                               method="post"
                                               class="flex items-stretch">
-                                            <button type="submit"
+                                            <button type="button"
                                                     title="Excluir"
-                                                    onclick="return confirm('Tem certeza que deseja excluir @ch.Name?');"
+                                                    onclick="openDeleteModal('@ch.Id', '@ch.Name.Replace("'", "\\'")')"
                                                     class="px-3 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center">
                                                 <span class="material-symbols-outlined text-[20px]">delete</span>
                                             </button>
@@ -156,3 +156,56 @@
         </main>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/50 backdrop-blur-sm transition-opacity">
+    <div class="relative w-full max-w-md p-4">
+        <div class="relative rounded-2xl bg-white dark:bg-slate-800 shadow-2xl p-6 border border-slate-200 dark:border-slate-700">
+            <button type="button" onclick="closeDeleteModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="flex flex-col items-center text-center mt-2">
+                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 mb-4">
+                    <span class="material-symbols-outlined text-3xl">warning</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Excluir Personagem</h3>
+                <p class="text-slate-500 dark:text-slate-400 mb-6">
+                    Tem certeza que deseja excluir permanentemente o personagem <strong id="deleteModalCharName" class="text-slate-900 dark:text-white"></strong>? Esta ação não pode ser desfeita.
+                </p>
+                <div class="flex gap-3 w-full">
+                    <button type="button" onclick="closeDeleteModal()" class="flex-1 rounded-lg px-4 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 font-bold transition-all">
+                        Cancelar
+                    </button>
+                    <button type="button" id="confirmDeleteBtn" class="flex-1 rounded-lg px-4 py-3 bg-red-600 text-white hover:bg-red-700 font-bold shadow-lg shadow-red-600/30 transition-all">
+                        Sim, Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentDeleteId = null;
+
+    function openDeleteModal(id, name) {
+        currentDeleteId = id;
+        document.getElementById('deleteModalCharName').innerText = name;
+        const modal = document.getElementById('deleteModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+        currentDeleteId = null;
+        const modal = document.getElementById('deleteModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        if (currentDeleteId) {
+            document.getElementById('delete-form-' + currentDeleteId).submit();
+        }
+    });
+</script>
