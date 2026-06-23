@@ -38,8 +38,6 @@ O projeto segue o padrão arquitetural **MVC (Model-View-Controller)** com separ
 - **`Infrastructure/`**: Contém lógicas auxiliares e de persistência, como o `RpgDbContext` e ferramentas de sincronização com APIs externas (`SrdSync`).
 - **`DndApi/`**: Contém os serviços de HttpClient responsáveis por consumir dados externos.
 
-> **Nota de Validação:** O projeto utiliza Data Annotations robustos tanto no Back-end quanto refletidos no Front-end, garantindo a integridade dos dados inseridos pelos usuários.
-
 ---
 
 ## Testes da API
